@@ -1,0 +1,92 @@
+@header-height: 40px;
+
+.easy-gantt * {
+  box-sizing: border-box;
+}
+
+.easy-gantt {
+  display: flex;
+  &-tree {
+    width: 500px;
+    border-right: 1px solid #ccc;
+    &-header {
+      display: flex;
+      height: @header-height;
+      line-height: 40px;
+      border-bottom: 1px solid #ccc;
+      border-top: 1px solid #ccc;
+      &>div {
+        flex: 1;
+      }
+    }
+    &-content{
+      &-line {
+        display: flex;
+        height: 25px;
+        line-height: 25px;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        border-bottom: 1px solid #ccc;
+        &>span{
+          flex: 1;
+        }
+      }
+    }
+  }
+
+  &-sheet {
+    //width: 600px;
+    overflow: auto;
+    &-header {
+      width: auto;
+      height: @header-height;
+      display: flex;
+      &-cell {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-right: 1px solid #ccc;
+        border-bottom: 1px solid #ccc;
+        border-top: 1px solid #ccc;
+      }
+    }
+    &-content {
+      position: relative;
+    }
+  }
+
+  &-item {
+    position: absolute;
+    border: 1px solid #2898b0;
+    height: 20px;
+    white-space: nowrap;
+    user-select: none;
+    cursor: pointer;
+    background: #3db9d3;
+    border-radius: 2px;
+    &-content {
+      text-align: center;
+    }
+    & .left-resizer {
+      background: #cccccc;
+      cursor: col-resize;
+    }
+    & .right-resizer {
+      background: #cccccc;
+      cursor: col-resize;
+    }
+    & .task-resizer {
+      position: absolute;
+      width: 8px;
+      height: 100%;
+      background: transparent;
+      cursor: col-resize;
+      &-left {
+        left: -4px;
+      }
+      &-right {
+        right: -4px;
+      }
+    }
+  }
+}

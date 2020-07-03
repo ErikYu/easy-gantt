@@ -1,0 +1,28 @@
+{
+    "env": {
+        "browser": true
+    },
+    "parser": "@typescript-eslint/parser",
+    "parserOptions": {
+        "sourceType": "module"
+    },
+    "globals": {
+        "document": "readonly"
+    },
+    "plugins": [
+        "@typescript-eslint"
+    ],
+    "overrides": [{
+        "files": ["spec/**/*"],
+        "globals": {
+            "describe": "readonly",
+            "it": "readonly"
+        }
+    }],
+    "rules": {
+        "import/prefer-default-export": false,
+        "import/extensions": false,
+        "no-unused-vars": ["warn", { "varsIgnorePattern": ".*", "args": "after-used", "argsIgnorePattern": "^_" }],
+        "lines-between-class-members": 0
+    }
+}

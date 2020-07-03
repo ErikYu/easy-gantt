@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title><%= htmlWebpackPlugin.options.title %></title>
+</head>
+<body onload="onload()">
+<div id="test"></div>
+<script>
+    var data = [
+      {
+        id: '1',
+        text: "fe part",
+        startAt: new Date("2020-05-01 08:00:00"),
+        endAt: new Date("2020-05-05 12:00:00"),
+        children: [
+          {id: '11', text: "ui", startAt: new Date("2020-05-01 08:00:00"), endAt: new Date("2020-05-03 10:00:00")},
+          {id: '12', text: "integrate", startAt: new Date("2020-05-02 09:00:00"), endAt: new Date("2020-05-05 12:00:00")},
+          // ...new Array(10000).fill({id: '12', text: "integrate", startAt: new Date("2020-05-02 09:00:00"), endAt: new Date("2020-05-05 12:00:00")}),
+        ]
+      },
+      {
+        id: '2',
+        text: "be part",
+        startAt: new Date("2020-05-01 08:00:00"),
+        endAt: new Date("2020-05-01 18:00:00"),
+      },
+      {
+        id: '3',
+        text: "prod part",
+        startAt: new Date("2020-05-01 08:00:00"),
+        endAt: new Date("2020-05-01 18:00:00"),
+      }
+    ]
+  onload = function(){
+    var inst = window.easy_gantt(document.querySelector('#test'), data)
+  }
+</script>
+</body>
+</html>
