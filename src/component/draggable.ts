@@ -6,6 +6,7 @@ import { DataStore } from '../core/data-store';
 import {
   addPx,
   getEndAtByEl,
+  GetProgressByEl,
   getStartAtByEl,
   GetStartAtEndAtByEl,
 } from '../util/util';
@@ -16,19 +17,22 @@ export class Draggable {
   contentEl: HTMLElement;
   leftResizerEl: HTMLElement;
   rightResizerEl: HTMLElement;
+  progressEl: HTMLElement;
+  progressResizer: HTMLElement;
   startScreenX: number;
   startLeft: string;
   initWidth: number;
+  initProgress: number; // 0 - 1
 
   constructor(public item: GanttItem, index: number, private store: DataStore) {
     const { unitWidth } = store;
+    const contentWidth =
+      (differenceInSeconds(item.endAt, item.startAt) * unitWidth) / 86400;
     this.el = g({
       tag: 'div',
       className: `${ClsPrefix}-item`,
       styles: {
-        width: `${
-          (differenceInSeconds(item.endAt, item.startAt) * unitWidth) / 86400
-        }px`,
+        width: `${contentWidth}px`,
         top: `${
           index * store.unitHeight +
           (store.unitHeight - 1 - store.barHeight) / 2
@@ -41,16 +45,61 @@ export class Draggable {
       children: [
         (this.leftResizerEl = new TaskResizer(true, this.store).el),
         (this.rightResizerEl = new TaskResizer(false, this.store).el),
+        (this.progressEl = g({
+          tag: 'div',
+          className: `${ClsPrefix}-item-progress`,
+          styles: {
+            width: `${item.progress * 100}%`,
+          },
+        })),
         (this.contentEl = g({
           tag: 'div',
           className: `${ClsPrefix}-item-content`,
           text: item.text,
+        })),
+        (this.progressResizer = g({
+          tag: 'div',
+          className: 'progress-resizer',
+          styles: {
+            left: `${item.progress * (contentWidth - 2)}px`,
+          },
         })),
       ],
     });
 
     this.bindLeftResizer();
     this.bindRightResizer();
+    this.bindProgressResizer();
+  }
+
+  bindProgressResizer() {
+    const onMoveFn = (evt) => {
+      const moveDistance = evt.screenX - this.startScreenX;
+      console.log(this.initProgress, moveDistance);
+      this.progressEl.style.width = addPx(
+        this.contentEl.getBoundingClientRect().width * this.initProgress,
+        moveDistance,
+      );
+      this.progressResizer.style.left = addPx(
+        this.contentEl.getBoundingClientRect().width * this.initProgress,
+        moveDistance,
+      );
+    };
+    const onMouseUp = (evt) => {
+      this.startScreenX = evt.screenX;
+      this.initProgress = GetProgressByEl(this.contentEl, this.progressEl);
+      document.removeEventListener('mousemove', onMoveFn);
+      document.removeEventListener('mouseup', onMouseUp);
+    };
+    this.progressResizer.onmousedown = (evt) => {
+      if (evt.detail !== 1) {
+        return;
+      }
+      this.startScreenX = evt.screenX;
+      this.initProgress = GetProgressByEl(this.contentEl, this.progressEl);
+      document.addEventListener('mousemove', onMoveFn);
+      document.addEventListener('mouseup', onMouseUp);
+    };
   }
 
   // move seconds
@@ -107,6 +156,7 @@ export class Draggable {
       document.addEventListener('mouseup', onMouseUp);
     };
   }
+
   bindRightResizer() {
     const onMoveFn = (evt) => {
       const moveDistance = evt.screenX - this.startScreenX;

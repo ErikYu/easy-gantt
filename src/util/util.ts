@@ -56,3 +56,13 @@ export function GetStartAtEndAtByEl(
     endAt: getEndAtByEl(rootStart, unitWidth, el),
   };
 }
+
+export function GetProgressByEl(
+  contentEl: HTMLElement,
+  progressEl: HTMLElement,
+): number {
+  return (
+    progressEl.getBoundingClientRect().width /
+    contentEl.getBoundingClientRect().width
+  );
+}
