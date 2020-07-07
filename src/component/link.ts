@@ -34,7 +34,7 @@ export class Link {
     emptyElem(this.el);
     const { fromEl, toEl } = this.options;
     const { store } = this;
-    const { linkThick, linkStartMin } = store.config;
+    const { linkThick, linkStartMin, arrowSize } = store.config;
     this.startPos = {
       left:
         px2Int(fromEl.style.left) +
@@ -51,52 +51,78 @@ export class Link {
       if (hDistance < 0) {
         this.drawLine(linkStartMin, 0)
           .drawLine(0, vDistance + linkThick, -linkThick, 0)
-          .drawLine(hDistance - linkStartMin, 0, linkThick, -linkThick);
+          .drawLine(
+            hDistance - linkStartMin + arrowSize,
+            0,
+            linkThick,
+            -linkThick,
+          );
       } else {
         this.drawLine(hDistance + linkStartMin, 0)
           .drawLine(0, vDistance + linkThick, -linkThick, 0)
-          .drawLine(-linkStartMin, 0, linkThick, -linkThick);
+          .drawLine(-linkStartMin + arrowSize, 0, linkThick, -linkThick);
       }
+      this.drawNegArrow(
+        this.startPos.left - 2 * arrowSize,
+        this.startPos.top - arrowSize + linkThick / 2,
+      );
     } else if (this.startAtRight && !this.endAtRight) {
       const hDistance = differencePx(toEl.style.left, this.startPos.left);
       if (hDistance < 2 * linkStartMin) {
         this.drawLine(linkStartMin, 0)
           .drawLine(0, store.unitHeight / 2 + linkThick, -linkThick, 0)
           .drawLine(-(-hDistance + 2 * linkStartMin), 0, linkThick, -linkThick)
-          .drawLine(0, vDistance - store.barHeight / 2)
-          .drawLine(linkStartMin, 0, 0, -linkThick);
+          .drawLine(0, vDistance - store.barHeight / 2 - linkThick / 2)
+          .drawLine(linkStartMin - arrowSize, 0, 0, -linkThick);
       } else {
         this.drawLine(hDistance / 2 + linkThick, 0)
           .drawLine(0, vDistance + linkThick, -linkThick, 0)
-          .drawLine(hDistance / 2, 0, 0, -linkThick);
+          .drawLine(hDistance / 2 - arrowSize, 0, 0, -linkThick);
       }
+      this.drawPosArrow(
+        this.startPos.left,
+        this.startPos.top - arrowSize + linkThick / 2,
+      );
     } else if (!this.startAtRight && this.endAtRight) {
       const hDistance = differencePx(
         toEl.getBoundingClientRect().right,
         fromEl.getBoundingClientRect().left,
       );
-      if (hDistance < -2 * linkStartMin) {
+      if (hDistance <= -2 * linkStartMin) {
         this.drawLine(hDistance / 2 - linkThick, 0)
           .drawLine(0, vDistance + linkThick)
-          .drawLine(hDistance / 2, 0, linkThick, -linkThick);
+          .drawLine(hDistance / 2 + arrowSize, 0, linkThick, -linkThick);
       } else {
         this.drawLine(-linkStartMin, 0)
           .drawLine(0, store.unitHeight / 2 + linkThick)
           .drawLine(hDistance + 2 * linkStartMin, 0, 0, -linkThick)
-          .drawLine(0, vDistance - store.barHeight / 2, -linkThick, 0)
-          .drawLine(-linkStartMin, 0, linkThick, -linkThick);
+          .drawLine(
+            0,
+            vDistance - store.barHeight / 2 - linkThick / 2,
+            -linkThick,
+            0,
+          )
+          .drawLine(-linkStartMin + arrowSize, 0, linkThick, -linkThick);
       }
+      this.drawNegArrow(
+        this.startPos.left - 2 * arrowSize,
+        this.startPos.top - arrowSize + linkThick / 2,
+      );
     } else {
       const hDistance = differencePx(toEl.style.left, fromEl.style.left);
       if (hDistance < 0) {
         this.drawLine(hDistance - linkStartMin, 0)
           .drawLine(0, vDistance + linkThick)
-          .drawLine(linkStartMin, 0, 0, -linkThick);
+          .drawLine(linkStartMin - arrowSize, 0, 0, -linkThick);
       } else {
         this.drawLine(-linkStartMin, 0)
           .drawLine(0, vDistance + linkThick)
-          .drawLine(hDistance + linkStartMin, 0, 0, -linkThick);
+          .drawLine(hDistance + linkStartMin - arrowSize, 0, 0, -linkThick);
       }
+      this.drawPosArrow(
+        this.startPos.left,
+        this.startPos.top - arrowSize + linkThick / 2,
+      );
     }
   }
 
@@ -109,8 +135,36 @@ export class Link {
     return this;
   }
 
+  private drawPosArrow(left, top) {
+    this.el.appendChild(
+      g({
+        tag: 'div',
+        className: `${ClsPrefix}-link-arrow to-right`,
+        styles: {
+          left: `${left}px`,
+          top: `${top}px`,
+          borderWidth: `${this.store.config.arrowSize}px`,
+        },
+      }),
+    );
+  }
+
+  private drawNegArrow(left, top) {
+    this.el.appendChild(
+      g({
+        tag: 'div',
+        className: `${ClsPrefix}-link-arrow to-left`,
+        styles: {
+          left: `${left}px`,
+          top: `${top}px`,
+          borderWidth: `${this.store.config.arrowSize}px`,
+        },
+      }),
+    );
+  }
+
   private d(left: number, top: number, x: number, y: number) {
-    const { linkThick, linkColor } = this.store.config;
+    const { linkThick } = this.store.config;
     if ((x === 0 && y === 0) || (x !== 0 && y !== 0)) {
       throw Error('Cannot draw this line');
     }
@@ -142,15 +196,10 @@ export class Link {
     }
     return g({
       tag: 'div',
-      className: `${ClsPrefix}-link-wrapper`,
+      className: `${ClsPrefix}-link`,
       styles: {
-        position: 'absolute',
         left: `${realLeft}px`,
         top: `${realTop}px`,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: linkColor,
         width: `${width}px`,
         height: `${height}px`,
       },

@@ -1,9 +1,16 @@
 @header-height: 40px;
 @clsPrefix: easy-gantt;
+@linkColor: #ffa011;
 
 .@{clsPrefix} * {
   box-sizing: border-box;
   font-family: Arial;
+}
+
+.FlexCenter() {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .@{clsPrefix} {
@@ -73,6 +80,8 @@
       position: absolute;
       z-index: 10;
       text-align: center;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
     &-progress {
       z-index: 5;
@@ -105,6 +114,36 @@
       background-position-x: center;
       top: ~"calc(100% - 7px)";
       margin-left: -8px;
+    }
+  }
+
+  &-link {
+    position: absolute;
+    cursor: pointer;
+    background-color: @linkColor;
+    .FlexCenter();
+    &-container {
+      &:hover {
+        .@{clsPrefix}-link {
+          box-shadow: 0 0 5px 0 @linkColor;
+        }
+      }
+    }
+  }
+
+  &-link-arrow {
+    position: absolute;
+    border-style: solid;
+    border-color: @linkColor;
+    border-top-color: transparent !important;
+    border-bottom-color: transparent !important;
+    width: 0;
+    height: 0;
+    &.to-right {
+      border-right-color: transparent !important;
+    }
+    &.to-left {
+      border-left-color: transparent !important;
     }
   }
 }

@@ -7,8 +7,8 @@ export type reloadLinkFn = (itemId: string) => void;
 export class DataStore {
   config = {
     linkStartMin: 30,
-    linkThick: 3,
-    linkColor: '#ffa011',
+    linkThick: 2,
+    arrowSize: 6,
   };
 
   totalStart: Date = new Date('2020-04-30 00:00:00');
