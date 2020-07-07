@@ -34,3 +34,8 @@ export function g<K extends keyof HTMLElementTagNameMap>({
   }
   return t;
 }
+
+export function emptyElem(el: HTMLElement) {
+  el.innerHTML = '';
+  return el;
+}

@@ -1,14 +1,17 @@
 import { add, differenceInDays, format } from 'date-fns';
-import { DataStore } from '../core/data-store';
+import { DataStore, EVT, reloadLinkFn } from '../core/data-store';
 import { appendChildren, g } from '../core/dom';
 import { ClsPrefix } from '../core/constant';
 import { Draggable } from './draggable';
 import { addPx, flatten } from '../util/util';
+import { Link } from './link';
 
 export class Sheet {
   el: HTMLElement;
   headerEl: HTMLElement;
   sheetEl: HTMLElement;
+  taskMap: Record<string, HTMLElement> = {};
+  taskConnMap: Record<string, Link[]> = {};
   constructor(private store: DataStore) {
     this.el = g({
       tag: 'div',
@@ -28,7 +31,15 @@ export class Sheet {
   }
 
   private load() {
-    // eslint-disable-next-line no-plusplus
+    this.renderHeader();
+    this.renderTasks();
+    this.renderLink();
+    this.store.on<reloadLinkFn>(EVT.reloadLink, (itemId) => {
+      this.taskConnMap[itemId].forEach((i: Link) => i.render());
+    });
+  }
+
+  private renderHeader() {
     for (
       let i = 0;
       i < differenceInDays(this.store.totalEnd, this.store.totalStart);
@@ -46,7 +57,9 @@ export class Sheet {
         }),
       );
     }
+  }
 
+  private renderTasks() {
     appendChildren(
       this.sheetEl,
       ...flatten(this.store.data).map((item, index) => {
@@ -72,8 +85,35 @@ export class Sheet {
           document.addEventListener('mousemove', onMoveFn);
           document.addEventListener('mouseup', onMouseUp);
         };
+        this.taskMap[item.id] = d.el;
         return d.el;
       }),
     );
+  }
+
+  private renderLink() {
+    // add connector
+    setTimeout(() => {
+      appendChildren(
+        this.sheetEl,
+        ...this.store.links.map((l) => {
+          const inst = new Link(
+            {
+              fromEl: this.taskMap[l.source],
+              toEl: this.taskMap[l.target],
+              typing: l.typing,
+            },
+            this.store,
+          );
+          (
+            this.taskConnMap[l.source] || (this.taskConnMap[l.source] = [])
+          ).push(inst);
+          (
+            this.taskConnMap[l.target] || (this.taskConnMap[l.target] = [])
+          ).push(inst);
+          return inst.el;
+        }),
+      );
+    });
   }
 }

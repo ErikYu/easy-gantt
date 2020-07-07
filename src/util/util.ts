@@ -14,11 +14,33 @@ export function flatten(data: GanttItem[]): GanttItem[] {
   return res;
 }
 
-export function addPx(val: any, added: number): string {
-  if (typeof val === 'string' && val.endsWith('px')) {
-    return `${+val.replace('px', '') + added}px`;
+function convArgs2Num(a: string | number, b: string | number) {
+  let leftVal: number;
+  let rightVal: number;
+  if (typeof a === 'string' && a.endsWith('px')) {
+    leftVal = +a.replace('px', '');
+  } else {
+    leftVal = +a;
   }
-  return `${+val + added}px`;
+  if (typeof b === 'string' && b.endsWith('px')) {
+    rightVal = +b.replace('px', '');
+  } else {
+    rightVal = +b;
+  }
+  return {
+    leftVal,
+    rightVal,
+  };
+}
+
+export function addPx(val: string | number, added: string | number): string {
+  const { leftVal, rightVal } = convArgs2Num(val, added);
+  return `${leftVal + rightVal}px`;
+}
+
+export function differencePx(a: number | string, b: number | string): number {
+  const { leftVal, rightVal } = convArgs2Num(a, b);
+  return leftVal - rightVal;
 }
 
 export function px2Int(data: string): number {

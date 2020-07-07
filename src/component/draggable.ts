@@ -2,7 +2,7 @@ import { addSeconds, differenceInSeconds } from 'date-fns';
 import { g } from '../core/dom';
 import { ClsPrefix } from '../core/constant';
 import { GanttFlatItem, GanttItem } from '../model/data';
-import { DataStore } from '../core/data-store';
+import { DataStore, EVT } from '../core/data-store';
 import {
   addPx,
   getEndAtByEl,
@@ -112,6 +112,7 @@ export class Draggable {
     this.item.startAt = startAt;
     this.item.endAt = endAt;
     this.store.emit('reload-tree');
+    this.store.emit(EVT.reloadLink, this.item.id);
   }
 
   moveStart() {
@@ -122,6 +123,7 @@ export class Draggable {
     );
 
     this.store.emit('reload-tree');
+    this.store.emit(EVT.reloadLink, this.item.id);
   }
 
   moveEnd() {
@@ -131,6 +133,7 @@ export class Draggable {
       this.el,
     );
     this.store.emit('reload-tree');
+    this.store.emit(EVT.reloadLink, this.item.id);
   }
 
   bindLeftResizer() {

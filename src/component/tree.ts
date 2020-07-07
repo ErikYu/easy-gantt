@@ -24,7 +24,7 @@ export class Tree {
         })),
       ],
     });
-    store.on('reload-tree', (res) => {
+    store.on('reload-tree', () => {
       this.loadTree();
     });
     this.loadTree();

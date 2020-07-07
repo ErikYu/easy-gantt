@@ -1,23 +1,37 @@
+export const EVT = {
+  reloadLink: 'reloadLink',
+};
+
+export type reloadLinkFn = (itemId: string) => void;
+
 export class DataStore {
+  config = {
+    linkStartMin: 30,
+    linkThick: 3,
+    linkColor: '#ffa011',
+  };
+
   totalStart: Date = new Date('2020-04-30 00:00:00');
   totalEnd: Date = new Date('2020-05-10 00:00:00');
   unitWidth = 120;
   unitHeight = 25;
   barHeight = 20;
   data;
+  links = [];
   private eventList = {};
   constructor(val) {
-    this.data = val;
+    this.data = val.tasks;
+    this.links = val.links;
   }
 
-  on(what, func) {
+  on<T>(what, func: T) {
     (this.eventList[what] || (this.eventList[what] = [])).push(func);
     return this;
   }
 
-  emit(what) {
+  emit(what, ...args: any) {
     (this.eventList[what] || []).forEach((fn) => {
-      fn(this.data);
+      fn(...args);
     });
   }
 }
