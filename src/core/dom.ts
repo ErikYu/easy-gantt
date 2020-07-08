@@ -4,6 +4,15 @@ export function appendChildren(el: HTMLElement, ...children: HTMLElement[]) {
   });
 }
 
+export function setStyle(
+  el: HTMLElement,
+  styles: Partial<CSSStyleDeclaration>,
+) {
+  Object.entries(styles).forEach(([s, v]) => {
+    el.style[s] = v;
+  });
+}
+
 export function g<K extends keyof HTMLElementTagNameMap>({
   tag,
   className,

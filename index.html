@@ -1,57 +1,60 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF/8">
     <title><%= htmlWebpackPlugin.options.title %></title>
 </head>
-<body onload="onload()">
-<div id="test"></div>
+<body style="margin:0" onload="onload()">
+<div style="height: 100px; width: 100px;"></div>
+<div style="margin: 20px; position:relative;">
+    <div id="test"></div>
+</div>
 <script>
     var tasks = [
       {
         id: '1',
-        text: "fe part",
-        startAt: new Date("2020-05-01 08:00:00"),
-        endAt: new Date("2020-05-05 12:00:00"),
+        text: "fe2 part",
+        startAt: new Date("2020/05/01 08:00:00"),
+        endAt: new Date("2020/05/05 12:00:00"),
         progress: 0.37,
         children: [
-          {id: '11', text: "ui", startAt: new Date("2020-05-01 08:00:00"), endAt: new Date("2020-05-03 10:00:00")},
-          {id: '12', text: "integrate", startAt: new Date("2020-05-02 09:00:00"), endAt: new Date("2020-05-05 12:00:00")},
-          // ...new Array(10000).fill({id: '12', text: "integrate", startAt: new Date("2020-05-02 09:00:00"), endAt: new Date("2020-05-05 12:00:00")}),
+          {id: '11', text: "ui", startAt: new Date("2020/05/01 08:00:00"), endAt: new Date("2020/05/03 10:00:00")},
+          {id: '12', text: "integrate", startAt: new Date("2020/05/02 09:00:00"), endAt: new Date("2020/05/05 12:00:00")},
+          // ...new Array(10000).fill({id: '12', text: "integrate", startAt: new Date("2020/05/02 09:00:00"), endAt: new Date("2020/05/05 12:00:00")}),
         ]
       },
       {
         id: '2',
         text: "be part",
-        startAt: new Date("2020-05-01 08:00:00"),
-        endAt: new Date("2020-05-01 18:00:00"),
+        startAt: new Date("2020/05/01 08:00:00"),
+        endAt: new Date("2020/05/01 18:00:00"),
       },
       {
         id: '3',
         text: "prod part",
-        startAt: new Date("2020-05-03 08:00:00"),
-        endAt: new Date("2020-05-03 18:00:00"),
+        startAt: new Date("2020/05/03 08:00:00"),
+        endAt: new Date("2020/05/03 18:00:00"),
       },
       {
         id: '4',
         text: "be part",
-        startAt: new Date("2020-05-01 08:00:00"),
-        endAt: new Date("2020-05-01 18:00:00"),
+        startAt: new Date("2020/05/01 08:00:00"),
+        endAt: new Date("2020/05/01 18:00:00"),
       },
       {
         id: '4.5',
         text: "asdasdasdasdt",
-        startAt: new Date("2020-05-02 01:00:00"),
-        endAt: new Date("2020-05-02 18:00:00"),
+        startAt: new Date("2020/05/02 01:00:00"),
+        endAt: new Date("2020/05/02 18:00:00"),
       },
       {
         id: '5',
         text: "prod part",
-        startAt: new Date("2020-05-02 01:00:00"),
-        endAt: new Date("2020-05-02 18:00:00"),
+        startAt: new Date("2020/05/02 01:00:00"),
+        endAt: new Date("2020/05/02 18:00:00"),
       }
     ];
-    // start-at-end
+    // start/at/end
     //
     var links = [
       {source: '11', target: '12', typing: 'r2l'},

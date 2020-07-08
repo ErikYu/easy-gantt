@@ -1,7 +1,7 @@
-import { addSeconds, differenceInSeconds } from 'date-fns';
-import { g } from '../core/dom';
+import { differenceInSeconds } from 'date-fns';
+import { g, setStyle } from '../core/dom';
 import { ClsPrefix } from '../core/constant';
-import { GanttFlatItem, GanttItem } from '../model/data';
+import { GanttItem } from '../model/data';
 import { DataStore, EVT } from '../core/data-store';
 import {
   addPx,
@@ -11,6 +11,8 @@ import {
   GetStartAtEndAtByEl,
 } from '../util/util';
 import { TaskResizer } from './task-resizer';
+import { Sheet } from './sheet';
+import { Link } from './link';
 
 export class Draggable {
   el: HTMLElement;
@@ -19,12 +21,19 @@ export class Draggable {
   rightResizerEl: HTMLElement;
   progressEl: HTMLElement;
   progressResizer: HTMLElement;
+  leftPointerEl: HTMLElement;
+  rightPointerEl: HTMLElement;
   startScreenX: number;
   startLeft: string;
   initWidth: number;
   initProgress: number; // 0 - 1
 
-  constructor(public item: GanttItem, index: number, private store: DataStore) {
+  constructor(
+    public item: GanttItem,
+    index: number,
+    private store: DataStore,
+    private sheet: Sheet,
+  ) {
     const { unitWidth } = store;
     const contentWidth =
       (differenceInSeconds(item.endAt, item.startAt) * unitWidth) / 86400;
@@ -64,12 +73,27 @@ export class Draggable {
             left: `${item.progress * (contentWidth - 2)}px`,
           },
         })),
+        (this.leftPointerEl = g({
+          tag: 'div',
+          className: 'pointer',
+          styles: {
+            left: '-15px',
+          },
+        })),
+        (this.rightPointerEl = g({
+          tag: 'div',
+          className: 'pointer',
+          styles: {
+            right: '-15px',
+          },
+        })),
       ],
     });
 
     this.bindLeftResizer();
     this.bindRightResizer();
     this.bindProgressResizer();
+    this.bindPointer();
   }
 
   bindProgressResizer() {
@@ -170,6 +194,7 @@ export class Draggable {
       this.startScreenX = evt.screenX;
       this.initWidth = this.el.getBoundingClientRect().width;
       document.removeEventListener('mousemove', onMoveFn);
+      document.removeEventListener('mouseup', onMouseUp);
     };
     this.rightResizerEl.onmousedown = (evt) => {
       if (evt.detail !== 1) {
@@ -180,5 +205,48 @@ export class Draggable {
       document.addEventListener('mousemove', onMoveFn);
       document.addEventListener('mouseup', onMouseUp);
     };
+  }
+
+  bindPointer() {
+    const fakeElem = g({
+      tag: 'div',
+      styles: {
+        position: 'absolute',
+        backgroundColor: 'transparent',
+      },
+    });
+    let fakeLink: Link = null;
+    const onMoveFn = (evt) => {
+      fakeElem.style.left = addPx(fakeElem.style.left, evt.movementX);
+      fakeElem.style.top = addPx(fakeElem.style.top, evt.movementY);
+      fakeLink.render();
+    };
+    const onMouseUp = () => {
+      this.sheet.sheetEl.removeChild(fakeElem);
+      this.sheet.sheetEl.removeChild(fakeLink.el);
+      fakeLink = null;
+      document.removeEventListener('mousemove', onMoveFn);
+      document.removeEventListener('mouseup', onMouseUp);
+    };
+    const onMouseDown = (pos: 'l' | 'r') => (evt: MouseEvent) => {
+      const top = `${
+        evt.clientY - this.sheet.sheetEl.getBoundingClientRect().top - 10
+      }px`;
+      const left = `${
+        evt.clientX - this.sheet.sheetEl.getBoundingClientRect().left
+      }px`;
+      setStyle(fakeElem, {
+        top,
+        left,
+      });
+      this.sheet.sheetEl.appendChild(fakeElem);
+      const typing = pos === 'l' ? 'l2l' : 'r2l';
+      fakeLink = new Link({ fromEl: this.el, toEl: fakeElem, typing, className: 'fake-link' }, this.store);
+      this.sheet.sheetEl.appendChild(fakeLink.el);
+      document.addEventListener('mousemove', onMoveFn);
+      document.addEventListener('mouseup', onMouseUp);
+    }
+    this.leftPointerEl.addEventListener('mousedown', onMouseDown('l'));
+    this.rightPointerEl.addEventListener('mousedown', onMouseDown('r'));
   }
 }

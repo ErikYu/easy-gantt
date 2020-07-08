@@ -17,15 +17,16 @@ export class Link {
       fromEl: HTMLElement;
       toEl: HTMLElement;
       typing: 'l2l' | 'l2r' | 'r2l' | 'r2r';
+      className?: string;
     },
     private store: DataStore,
   ) {
-    const { typing } = options;
+    const { typing, className } = options;
     this.startAtRight = typing.startsWith('r');
     this.endAtRight = typing.endsWith('r');
     this.el = g({
       tag: 'div',
-      className: `${ClsPrefix}-link-container`,
+      className: `${ClsPrefix}-link-container${className ? ` ${className}` : ''}`,
     });
     this.render();
   }
@@ -163,11 +164,18 @@ export class Link {
     );
   }
 
+  /**
+   * draw link line
+   * @param left 起始点left
+   * @param top 起始点top
+   * @param x 距离
+   * @param y 距离
+   */
   private d(left: number, top: number, x: number, y: number) {
     const { linkThick } = this.store.config;
-    if ((x === 0 && y === 0) || (x !== 0 && y !== 0)) {
-      throw Error('Cannot draw this line');
-    }
+    // if ((x === 0 && y === 0) || (x !== 0 && y !== 0)) {
+    //   throw Error(`Cannot draw this line： ${JSON.stringify({x,y})}`);
+    // }
     let realLeft;
     let realTop;
     let width;

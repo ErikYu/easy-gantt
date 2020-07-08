@@ -11,8 +11,8 @@ export class DataStore {
     arrowSize: 6,
   };
 
-  totalStart: Date = new Date('2020-04-30 00:00:00');
-  totalEnd: Date = new Date('2020-05-10 00:00:00');
+  totalStart: Date = new Date('2020/04/30 00:00:00');
+  totalEnd: Date = new Date('2020/05/10 00:00:00');
   unitWidth = 120;
   unitHeight = 25;
   barHeight = 20;

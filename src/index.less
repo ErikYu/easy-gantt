@@ -2,9 +2,14 @@
 @clsPrefix: easy-gantt;
 @linkColor: #ffa011;
 
+// z-index layer
+@task-index: 100;
+@link-index: 90;
+@fake-link-index: 110;
+
 .@{clsPrefix} * {
   box-sizing: border-box;
-  font-family: Arial;
+  font-family: Arial, serif;
 }
 
 .FlexCenter() {
@@ -73,6 +78,17 @@
     cursor: pointer;
     background: #3db9d3;
     border-radius: 2px;
+    z-index: @task-index;
+    .pointer {
+      position: absolute;
+      display: none;
+      width: 10px;
+      height: 10px;
+      top: ~"calc(50% - 5px)";
+      background-color: #fff;
+      border: 1px solid #ccc;
+      border-radius: 50%;
+    }
     &-content {
       color: #fff;
       width: 100%;
@@ -91,19 +107,20 @@
     }
     & .task-resizer {
       position: absolute;
-      width: 8px;
+      width: 30px;
       height: 100%;
       background: transparent;
       &-left {
-        left: -4px;
+        left: -20px;
         cursor: w-resize;
       }
       &-right {
-        right: -4px;
+        right: -20px;
         cursor: e-resize;
       }
     }
     & .progress-resizer {
+      display: none;
       z-index: 12;
       width: 16px;
       height: 16px;
@@ -114,6 +131,22 @@
       background-position-x: center;
       top: ~"calc(100% - 7px)";
       margin-left: -8px;
+    }
+    &:hover {
+      .pointer {
+        display: block;
+      }
+      .progress-resizer{
+        display: block;
+      }
+    }
+  }
+
+  &-link-container {
+    position: absolute;
+    z-index: @link-index;
+    &.fake-link {
+      z-index: @fake-link-index;
     }
   }
 

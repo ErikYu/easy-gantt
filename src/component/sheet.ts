@@ -63,7 +63,7 @@ export class Sheet {
     appendChildren(
       this.sheetEl,
       ...flatten(this.store.data).map((item, index) => {
-        const d = new Draggable(item, index, this.store);
+        const d = new Draggable(item, index, this.store, this);
         d.startLeft = d.el.style.left;
         const onMoveFn = (evt) => {
           const moveDistance =
