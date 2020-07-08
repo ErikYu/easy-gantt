@@ -221,7 +221,7 @@ export class Draggable {
       fakeElem.style.top = addPx(fakeElem.style.top, evt.movementY);
       fakeLink.render();
     };
-    const onMouseUp = () => {
+    const onMouseUp = (evt: MouseEvent) => {
       this.sheet.sheetEl.removeChild(fakeElem);
       this.sheet.sheetEl.removeChild(fakeLink.el);
       fakeLink = null;
@@ -241,11 +241,14 @@ export class Draggable {
       });
       this.sheet.sheetEl.appendChild(fakeElem);
       const typing = pos === 'l' ? 'l2l' : 'r2l';
-      fakeLink = new Link({ fromEl: this.el, toEl: fakeElem, typing, className: 'fake-link' }, this.store);
+      fakeLink = new Link(
+        { fromEl: this.el, toEl: fakeElem, typing, className: 'fake-link' },
+        this.store,
+      );
       this.sheet.sheetEl.appendChild(fakeLink.el);
       document.addEventListener('mousemove', onMoveFn);
       document.addEventListener('mouseup', onMouseUp);
-    }
+    };
     this.leftPointerEl.addEventListener('mousedown', onMouseDown('l'));
     this.rightPointerEl.addEventListener('mousedown', onMouseDown('r'));
   }

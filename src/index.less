@@ -1,15 +1,20 @@
+@import "./theme/material";
 @header-height: 40px;
 @clsPrefix: easy-gantt;
-@linkColor: #ffa011;
 
 // z-index layer
 @task-index: 100;
 @link-index: 90;
 @fake-link-index: 110;
 
+// related to js file, do not change
+@line-height: 48px;
+@task-height: 40px;
+
 .@{clsPrefix} * {
   box-sizing: border-box;
   font-family: Arial, serif;
+  color: @normal-text;
 }
 
 .FlexCenter() {
@@ -22,13 +27,13 @@
   display: flex;
   &-tree {
     width: 500px;
-    border-right: 1px solid #ccc;
+    border-right: 1px solid #e0e0e0;
     &-header {
       display: flex;
       height: @header-height;
       line-height: 40px;
-      border-bottom: 1px solid #ccc;
-      border-top: 1px solid #ccc;
+      border-bottom: 1px solid #e0e0e0;
+      border-top: 1px solid #e0e0e0;
       &>div {
         flex: 1;
       }
@@ -36,11 +41,11 @@
     &-content{
       &-line {
         display: flex;
-        height: 25px;
-        line-height: 25px;
+        height: @line-height;
+        line-height: @line-height;
         white-space: nowrap;
         text-overflow: ellipsis;
-        border-bottom: 1px solid #ccc;
+        border-bottom: 1px solid #e0e0e0;
         &>span{
           flex: 1;
         }
@@ -59,9 +64,9 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        border-right: 1px solid #ccc;
-        border-bottom: 1px solid #ccc;
-        border-top: 1px solid #ccc;
+        border-right: 1px solid #e0e0e0;
+        border-bottom: 1px solid #e0e0e0;
+        border-top: 1px solid #e0e0e0;
       }
     }
     &-content {
@@ -71,12 +76,12 @@
 
   &-item {
     position: absolute;
-    border: 1px solid #2898b0;
-    height: 20px;
+    border: 1px solid @task-border-color;
+    height: @task-height;
     white-space: nowrap;
     user-select: none;
     cursor: pointer;
-    background: #3db9d3;
+    background: @task-color;
     border-radius: 2px;
     z-index: @task-index;
     .pointer {
@@ -86,7 +91,7 @@
       height: 10px;
       top: ~"calc(50% - 5px)";
       background-color: #fff;
-      border: 1px solid #ccc;
+      border: 1px solid #e0e0e0;
       border-radius: 50%;
     }
     &-content {
@@ -98,12 +103,13 @@
       text-align: center;
       overflow: hidden;
       text-overflow: ellipsis;
+      line-height: @task-height;
     }
     &-progress {
       z-index: 5;
       position: absolute;
       height: 100%;
-      background: #2898b0;
+      background: @progress-color;
     }
     & .task-resizer {
       position: absolute;
@@ -153,12 +159,12 @@
   &-link {
     position: absolute;
     cursor: pointer;
-    background-color: @linkColor;
+    background-color: @link-color;
     .FlexCenter();
     &-container {
       &:hover {
         .@{clsPrefix}-link {
-          box-shadow: 0 0 5px 0 @linkColor;
+          box-shadow: 0 0 5px 0 @link-color;
         }
       }
     }
@@ -167,7 +173,7 @@
   &-link-arrow {
     position: absolute;
     border-style: solid;
-    border-color: @linkColor;
+    border-color: @link-color;
     border-top-color: transparent !important;
     border-bottom-color: transparent !important;
     width: 0;

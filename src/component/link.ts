@@ -26,7 +26,9 @@ export class Link {
     this.endAtRight = typing.endsWith('r');
     this.el = g({
       tag: 'div',
-      className: `${ClsPrefix}-link-container${className ? ` ${className}` : ''}`,
+      className: `${ClsPrefix}-link-container${
+        className ? ` ${className}` : ''
+      }`,
     });
     this.render();
   }
@@ -73,7 +75,7 @@ export class Link {
         this.drawLine(linkStartMin, 0)
           .drawLine(0, store.unitHeight / 2 + linkThick, -linkThick, 0)
           .drawLine(-(-hDistance + 2 * linkStartMin), 0, linkThick, -linkThick)
-          .drawLine(0, vDistance - store.barHeight / 2 - linkThick / 2)
+          .drawLine(0, vDistance - store.unitHeight / 2 + linkThick)
           .drawLine(linkStartMin - arrowSize, 0, 0, -linkThick);
       } else {
         this.drawLine(hDistance / 2 + linkThick, 0)
@@ -99,7 +101,7 @@ export class Link {
           .drawLine(hDistance + 2 * linkStartMin, 0, 0, -linkThick)
           .drawLine(
             0,
-            vDistance - store.barHeight / 2 - linkThick / 2,
+            vDistance - store.unitHeight / 2 + linkThick,
             -linkThick,
             0,
           )
