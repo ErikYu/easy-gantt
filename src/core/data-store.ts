@@ -9,13 +9,13 @@ export class DataStore {
     linkStartMin: 30,
     linkThick: 2,
     arrowSize: 6,
+    lineHeight: 48,
+    taskHeight: 40,
   };
 
   totalStart: Date = new Date('2020/04/30 00:00:00');
   totalEnd: Date = new Date('2020/05/10 00:00:00');
   unitWidth = 120;
-  unitHeight = 48;
-  barHeight = 40;
   data;
   links = [];
   private eventList = {};

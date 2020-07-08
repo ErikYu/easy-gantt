@@ -3,12 +3,19 @@ import { ClsPrefix } from '../core/constant';
 import { differencePx, px2Int } from '../util/util';
 import { DataStore } from '../core/data-store';
 
+function getStartLeft(el: HTMLElement): number {
+  return px2Int(el.style.left);
+}
+
+function getEndLeft(el: HTMLElement): number {
+  return px2Int(el.style.left) + el.getBoundingClientRect().width;
+}
+
 export class Link {
   el: HTMLElement;
   startPos: {
     left: number;
     top: number;
-    invokeCount: number;
   };
   private readonly startAtRight: boolean;
   private readonly endAtRight: boolean;
@@ -36,99 +43,319 @@ export class Link {
   render() {
     emptyElem(this.el);
     const { fromEl, toEl } = this.options;
-    const { store } = this;
-    const { linkThick, linkStartMin, arrowSize } = store.config;
-    this.startPos = {
-      left:
-        px2Int(fromEl.style.left) +
-        (this.startAtRight ? fromEl.getBoundingClientRect().width : 0),
-      top: px2Int(fromEl.style.top) + store.barHeight / 2 - linkThick / 2,
-      invokeCount: 0,
-    };
-    const vDistance = differencePx(toEl.style.top, fromEl.style.top);
-    if (this.startAtRight && this.endAtRight) {
-      const hDistance = differencePx(
-        toEl.getBoundingClientRect().right,
-        fromEl.getBoundingClientRect().right,
-      );
-      if (hDistance < 0) {
-        this.drawLine(linkStartMin, 0)
-          .drawLine(0, vDistance + linkThick, -linkThick, 0)
-          .drawLine(
-            hDistance - linkStartMin + arrowSize,
-            0,
-            linkThick,
-            -linkThick,
-          );
+    const vd = differencePx(toEl.style.top, fromEl.style.top);
+    const vDistance = Math.abs(vd);
+    if (this.startAtRight && !this.endAtRight) {
+      if (vd > 0) {
+        this.drawZA(fromEl, toEl, { vDistance });
       } else {
-        this.drawLine(hDistance + linkStartMin, 0)
-          .drawLine(0, vDistance + linkThick, -linkThick, 0)
-          .drawLine(-linkStartMin + arrowSize, 0, linkThick, -linkThick);
+        this.drawAS(toEl, fromEl, { vDistance });
       }
-      this.drawNegArrow(
-        this.startPos.left - 2 * arrowSize,
-        this.startPos.top - arrowSize + linkThick / 2,
-      );
-    } else if (this.startAtRight && !this.endAtRight) {
-      const hDistance = differencePx(toEl.style.left, this.startPos.left);
-      if (hDistance < 2 * linkStartMin) {
-        this.drawLine(linkStartMin, 0)
-          .drawLine(0, store.unitHeight / 2 + linkThick, -linkThick, 0)
-          .drawLine(-(-hDistance + 2 * linkStartMin), 0, linkThick, -linkThick)
-          .drawLine(0, vDistance - store.unitHeight / 2 + linkThick)
-          .drawLine(linkStartMin - arrowSize, 0, 0, -linkThick);
-      } else {
-        this.drawLine(hDistance / 2 + linkThick, 0)
-          .drawLine(0, vDistance + linkThick, -linkThick, 0)
-          .drawLine(hDistance / 2 - arrowSize, 0, 0, -linkThick);
-      }
-      this.drawPosArrow(
-        this.startPos.left,
-        this.startPos.top - arrowSize + linkThick / 2,
-      );
     } else if (!this.startAtRight && this.endAtRight) {
-      const hDistance = differencePx(
-        toEl.getBoundingClientRect().right,
-        fromEl.getBoundingClientRect().left,
-      );
-      if (hDistance <= -2 * linkStartMin) {
-        this.drawLine(hDistance / 2 - linkThick, 0)
-          .drawLine(0, vDistance + linkThick)
-          .drawLine(hDistance / 2 + arrowSize, 0, linkThick, -linkThick);
+      if (vd > 0) {
+        this.drawSA(fromEl, toEl, { vDistance });
       } else {
-        this.drawLine(-linkStartMin, 0)
-          .drawLine(0, store.unitHeight / 2 + linkThick)
-          .drawLine(hDistance + 2 * linkStartMin, 0, 0, -linkThick)
-          .drawLine(
-            0,
-            vDistance - store.unitHeight / 2 + linkThick,
-            -linkThick,
-            0,
-          )
-          .drawLine(-linkStartMin + arrowSize, 0, linkThick, -linkThick);
+        this.drawAZ(toEl, fromEl, { vDistance });
       }
-      this.drawNegArrow(
-        this.startPos.left - 2 * arrowSize,
-        this.startPos.top - arrowSize + linkThick / 2,
-      );
+    } else if (this.startAtRight && this.endAtRight) {
+      if (vd > 0) {
+        this.drawDA(fromEl, toEl, { vDistance });
+      } else {
+        this.drawAD(toEl, fromEl, { vDistance });
+      }
     } else {
-      const hDistance = differencePx(toEl.style.left, fromEl.style.left);
-      if (hDistance < 0) {
-        this.drawLine(hDistance - linkStartMin, 0)
-          .drawLine(0, vDistance + linkThick)
-          .drawLine(linkStartMin - arrowSize, 0, 0, -linkThick);
+      // !this.startAtRight && !this.endAtRight
+      if (vd > 0) {
+        this.drawCA(fromEl, toEl, { vDistance });
       } else {
-        this.drawLine(-linkStartMin, 0)
-          .drawLine(0, vDistance + linkThick)
-          .drawLine(hDistance + linkStartMin - arrowSize, 0, 0, -linkThick);
+        this.drawAC(toEl, fromEl, { vDistance });
       }
-      this.drawPosArrow(
-        this.startPos.left,
-        this.startPos.top - arrowSize + linkThick / 2,
-      );
     }
   }
 
+  private drawZA(
+    topEl: HTMLElement,
+    bottomEl: HTMLElement,
+    { vDistance }: { vDistance: number },
+  ) {
+    const {
+      linkThick,
+      linkStartMin,
+      arrowSize,
+      lineHeight,
+      taskHeight,
+    } = this.store.config;
+    this.startPos = {
+      left: getEndLeft(topEl),
+      top: px2Int(topEl.style.top) + taskHeight / 2 - linkThick / 2,
+    };
+    const hDistance = differencePx(bottomEl.style.left, this.startPos.left);
+    if (hDistance < 2 * linkStartMin) {
+      this.drawLine(linkStartMin, 0)
+        .drawLine(0, lineHeight / 2 + linkThick, -linkThick, 0)
+        .drawLine(-(-hDistance + 2 * linkStartMin), 0, linkThick, -linkThick)
+        .drawLine(0, vDistance - lineHeight / 2 + linkThick)
+        .drawLine(linkStartMin - arrowSize, 0, 0, -linkThick);
+    } else {
+      this.drawLine(hDistance / 2 + linkThick, 0)
+        .drawLine(0, vDistance + linkThick, -linkThick, 0)
+        .drawLine(hDistance / 2 - arrowSize, 0, 0, -linkThick);
+    }
+    this.drawPosArrow(
+      this.startPos.left,
+      this.startPos.top - arrowSize + linkThick / 2,
+    );
+  }
+
+  private drawAZ(
+    topEl: HTMLElement,
+    bottomEl: HTMLElement,
+    { vDistance }: { vDistance: number },
+  ) {
+    const {
+      linkThick,
+      linkStartMin,
+      arrowSize,
+      lineHeight,
+      taskHeight,
+    } = this.store.config;
+    this.startPos = {
+      left: getEndLeft(topEl),
+      top: px2Int(topEl.style.top) + taskHeight / 2 - linkThick / 2,
+    };
+    const hDistance = differencePx(bottomEl.style.left, this.startPos.left);
+    this.drawNegArrow(
+      this.startPos.left - arrowSize,
+      this.startPos.top - arrowSize + linkThick / 2,
+    );
+    if (hDistance < 2 * linkStartMin) {
+      this.drawLine(linkStartMin - arrowSize, 0, arrowSize, 0)
+        .drawLine(0, lineHeight / 2 + linkThick, -linkThick, 0)
+        .drawLine(-(-hDistance + 2 * linkStartMin), 0, linkThick, -linkThick)
+        .drawLine(0, vDistance - lineHeight / 2 + linkThick)
+        .drawLine(linkStartMin, 0, 0, -linkThick);
+    } else {
+      this.drawLine(hDistance / 2 + linkThick - arrowSize, 0, arrowSize, 0)
+        .drawLine(0, vDistance + linkThick, -linkThick, 0)
+        .drawLine(hDistance / 2, 0, 0, -linkThick);
+    }
+  }
+
+  private drawSA(
+    topEl: HTMLElement,
+    bottomEl: HTMLElement,
+    { vDistance }: { vDistance: number },
+  ) {
+    const {
+      linkThick,
+      linkStartMin,
+      arrowSize,
+      lineHeight,
+      taskHeight,
+    } = this.store.config;
+    this.startPos = {
+      left: getStartLeft(topEl),
+      top: px2Int(topEl.style.top) + taskHeight / 2 - linkThick / 2,
+    };
+    const hDistance = differencePx(
+      bottomEl.getBoundingClientRect().right,
+      topEl.getBoundingClientRect().left,
+    );
+    if (hDistance <= -2 * linkStartMin) {
+      this.drawLine(hDistance / 2 - linkThick, 0)
+        .drawLine(0, vDistance + linkThick)
+        .drawLine(hDistance / 2 + arrowSize, 0, linkThick, -linkThick);
+    } else {
+      this.drawLine(-linkStartMin, 0)
+        .drawLine(0, lineHeight / 2 + linkThick)
+        .drawLine(hDistance + 2 * linkStartMin, 0, 0, -linkThick)
+        .drawLine(0, vDistance - lineHeight / 2 + linkThick, -linkThick, 0)
+        .drawLine(-linkStartMin + arrowSize, 0, linkThick, -linkThick);
+    }
+    this.drawNegArrow(
+      this.startPos.left - 2 * arrowSize,
+      this.startPos.top - arrowSize + linkThick / 2,
+    );
+  }
+
+  private drawAS(
+    topEl: HTMLElement,
+    bottomEl: HTMLElement,
+    { vDistance }: { vDistance: number },
+  ) {
+    const {
+      linkThick,
+      linkStartMin,
+      arrowSize,
+      lineHeight,
+      taskHeight,
+    } = this.store.config;
+    this.startPos = {
+      left: getStartLeft(topEl),
+      top: px2Int(topEl.style.top) + taskHeight / 2 - linkThick / 2,
+    };
+    const hDistance = differencePx(
+      bottomEl.getBoundingClientRect().right,
+      topEl.getBoundingClientRect().left,
+    );
+    this.drawPosArrow(
+      this.startPos.left - arrowSize,
+      this.startPos.top - arrowSize + linkThick / 2,
+    );
+    if (hDistance <= -2 * linkStartMin) {
+      this.drawLine(hDistance / 2 - linkThick + arrowSize, 0, -arrowSize, 0)
+        .drawLine(0, vDistance + linkThick)
+        .drawLine(hDistance / 2, 0, linkThick, -linkThick);
+    } else {
+      this.drawLine(-linkStartMin + arrowSize, 0, -arrowSize, 0)
+        .drawLine(0, lineHeight / 2 + linkThick)
+        .drawLine(hDistance + 2 * linkStartMin, 0, 0, -linkThick)
+        .drawLine(0, vDistance - lineHeight / 2 + linkThick, -linkThick, 0)
+        .drawLine(-linkStartMin, 0, linkThick, -linkThick);
+    }
+  }
+
+  private drawDA(
+    topEl: HTMLElement,
+    bottomEl: HTMLElement,
+    { vDistance }: { vDistance: number },
+  ) {
+    const {
+      linkThick,
+      linkStartMin,
+      arrowSize,
+      taskHeight,
+    } = this.store.config;
+    this.startPos = {
+      left: getEndLeft(topEl),
+      top: px2Int(topEl.style.top) + taskHeight / 2 - linkThick / 2,
+    };
+    const hDistance = differencePx(
+      bottomEl.getBoundingClientRect().right,
+      topEl.getBoundingClientRect().right,
+    );
+    if (hDistance < 0) {
+      this.drawLine(linkStartMin, 0)
+        .drawLine(0, vDistance + linkThick, -linkThick, 0)
+        .drawLine(
+          hDistance - linkStartMin + arrowSize,
+          0,
+          linkThick,
+          -linkThick,
+        );
+    } else {
+      this.drawLine(hDistance + linkStartMin, 0)
+        .drawLine(0, vDistance + linkThick, -linkThick, 0)
+        .drawLine(-linkStartMin + arrowSize, 0, linkThick, -linkThick);
+    }
+    this.drawNegArrow(
+      this.startPos.left - 2 * arrowSize,
+      this.startPos.top - arrowSize + linkThick / 2,
+    );
+  }
+
+  private drawAD(
+    topEl: HTMLElement,
+    bottomEl: HTMLElement,
+    { vDistance }: { vDistance: number },
+  ) {
+    const {
+      linkThick,
+      linkStartMin,
+      arrowSize,
+      taskHeight,
+    } = this.store.config;
+    this.startPos = {
+      left: getEndLeft(topEl),
+      top: px2Int(topEl.style.top) + taskHeight / 2 - linkThick / 2,
+    };
+    const hDistance = differencePx(
+      bottomEl.getBoundingClientRect().right,
+      topEl.getBoundingClientRect().right,
+    );
+    this.drawNegArrow(
+      this.startPos.left - arrowSize,
+      this.startPos.top - arrowSize + linkThick / 2,
+    );
+    if (hDistance < 0) {
+      this.drawLine(linkStartMin - arrowSize, 0, arrowSize, 0)
+        .drawLine(0, vDistance + linkThick, -linkThick, 0)
+        .drawLine(hDistance - linkStartMin, 0, linkThick, -linkThick);
+    } else {
+      this.drawLine(hDistance + linkStartMin - arrowSize, 0, arrowSize, 0)
+        .drawLine(0, vDistance + linkThick, -linkThick, 0)
+        .drawLine(-linkStartMin, 0, linkThick, -linkThick);
+    }
+  }
+
+  private drawCA(
+    topEl: HTMLElement,
+    bottomEl: HTMLElement,
+    { vDistance }: { vDistance: number },
+  ) {
+    const {
+      linkThick,
+      linkStartMin,
+      arrowSize,
+      taskHeight,
+    } = this.store.config;
+    this.startPos = {
+      left: getStartLeft(topEl),
+      top: px2Int(topEl.style.top) + taskHeight / 2 - linkThick / 2,
+    };
+    const hDistance = differencePx(bottomEl.style.left, topEl.style.left);
+    if (hDistance < 0) {
+      this.drawLine(hDistance - linkStartMin, 0)
+        .drawLine(0, vDistance + linkThick)
+        .drawLine(linkStartMin - arrowSize, 0, 0, -linkThick);
+    } else {
+      this.drawLine(-linkStartMin, 0)
+        .drawLine(0, vDistance + linkThick)
+        .drawLine(hDistance + linkStartMin - arrowSize, 0, 0, -linkThick);
+    }
+    this.drawPosArrow(
+      this.startPos.left,
+      this.startPos.top - arrowSize + linkThick / 2,
+    );
+  }
+
+  private drawAC(
+    topEl: HTMLElement,
+    bottomEl: HTMLElement,
+    { vDistance }: { vDistance: number },
+  ) {
+    const {
+      linkThick,
+      linkStartMin,
+      arrowSize,
+      taskHeight,
+    } = this.store.config;
+    this.startPos = {
+      left: getStartLeft(topEl),
+      top: px2Int(topEl.style.top) + taskHeight / 2 - linkThick / 2,
+    };
+    const hDistance = differencePx(bottomEl.style.left, topEl.style.left);
+    this.drawPosArrow(
+      this.startPos.left - arrowSize,
+      this.startPos.top - arrowSize + linkThick / 2,
+    );
+    if (hDistance < 0) {
+      this.drawLine(hDistance - linkStartMin + arrowSize, 0, -arrowSize, 0)
+        .drawLine(0, vDistance + linkThick)
+        .drawLine(linkStartMin, 0, 0, -linkThick);
+    } else {
+      this.drawLine(-linkStartMin + arrowSize, 0, -arrowSize, 0)
+        .drawLine(0, vDistance + linkThick)
+        .drawLine(hDistance + linkStartMin, 0, 0, -linkThick);
+    }
+  }
+
+  /**
+   * @param x
+   * @param y
+   * @param shiftX shift the start pointer before start drawing
+   * @param shiftY shift the start pointer before start drawing
+   */
   private drawLine(x: number, y: number, shiftX = 0, shiftY = 0) {
     this.startPos.left += shiftX;
     this.startPos.top += shiftY;
@@ -170,8 +397,8 @@ export class Link {
    * draw link line
    * @param left 起始点left
    * @param top 起始点top
-   * @param x 距离
-   * @param y 距离
+   * @param x 水平方向移动距离
+   * @param y 竖直方向移动距离
    */
   private d(left: number, top: number, x: number, y: number) {
     const { linkThick } = this.store.config;

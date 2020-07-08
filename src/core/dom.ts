@@ -19,12 +19,14 @@ export function g<K extends keyof HTMLElementTagNameMap>({
   children,
   text,
   styles,
+  attrs,
 }: {
   tag: K;
   className?: string;
   children?: HTMLElement[];
   text?: string;
   styles?;
+  attrs?: Record<string, string>;
 }): HTMLElement {
   const t: HTMLElement = document.createElement(tag);
   if (className) {
@@ -36,6 +38,11 @@ export function g<K extends keyof HTMLElementTagNameMap>({
   if (styles) {
     Object.entries(styles).forEach(([s, v]) => {
       t.style[s] = v;
+    });
+  }
+  if (attrs) {
+    Object.entries(attrs).forEach(([a, v]) => {
+      t.setAttribute(a, v);
     });
   }
   if (Array.isArray(children) && children.length > 0) {

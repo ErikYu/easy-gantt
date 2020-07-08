@@ -35,7 +35,7 @@ export class Sheet {
     this.renderTasks();
     this.renderLink();
     this.store.on<reloadLinkFn>(EVT.reloadLink, (itemId) => {
-      this.taskConnMap[itemId].forEach((i: Link) => i.render());
+      (this.taskConnMap[itemId] || []).forEach((i: Link) => i.render());
     });
   }
 

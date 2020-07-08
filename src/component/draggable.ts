@@ -39,12 +39,15 @@ export class Draggable {
       (differenceInSeconds(item.endAt, item.startAt) * unitWidth) / 86400;
     this.el = g({
       tag: 'div',
+      attrs: {
+        id: `egt_${item.id}`,
+      },
       className: `${ClsPrefix}-item`,
       styles: {
         width: `${contentWidth}px`,
         top: `${
-          index * store.unitHeight +
-          (store.unitHeight - 1 - store.barHeight) / 2
+          index * store.config.lineHeight +
+          (store.config.lineHeight - 1 - store.config.taskHeight) / 2
         }px`,
         left: `${
           (differenceInSeconds(item.startAt, store.totalStart) * unitWidth) /
@@ -99,7 +102,6 @@ export class Draggable {
   bindProgressResizer() {
     const onMoveFn = (evt) => {
       const moveDistance = evt.screenX - this.startScreenX;
-      console.log(this.initProgress, moveDistance);
       this.progressEl.style.width = addPx(
         this.contentEl.getBoundingClientRect().width * this.initProgress,
         moveDistance,
@@ -216,6 +218,7 @@ export class Draggable {
       },
     });
     let fakeLink: Link = null;
+    let startFrom: 'l' | 'r';
     const onMoveFn = (evt) => {
       fakeElem.style.left = addPx(fakeElem.style.left, evt.movementX);
       fakeElem.style.top = addPx(fakeElem.style.top, evt.movementY);
@@ -227,10 +230,35 @@ export class Draggable {
       fakeLink = null;
       document.removeEventListener('mousemove', onMoveFn);
       document.removeEventListener('mouseup', onMouseUp);
+      const allHitEls: HTMLElement[] =
+        document.elementsFromPoint(evt.clientX, evt.clientY) || ([] as any);
+      const hitTaskEl = allHitEls.find((i) =>
+        i.classList.contains('easy-gantt-item'),
+      );
+      if (hitTaskEl) {
+        const typing = startFrom === 'l' ? 'l2l' : 'r2l';
+        const newLink = new Link(
+          { fromEl: this.el, toEl: hitTaskEl, typing },
+          this.store,
+        );
+        this.sheet.sheetEl.appendChild(newLink.el);
+        const sourceId = this.el.id.replace('egt_', '');
+        const targetId = hitTaskEl.id.replace('egt_', '');
+        (
+          this.sheet.taskConnMap[sourceId] ||
+          (this.sheet.taskConnMap[sourceId] = [])
+        ).push(newLink);
+        (
+          this.sheet.taskConnMap[targetId] ||
+          (this.sheet.taskConnMap[targetId] = [])
+        ).push(newLink);
+      }
     };
     const onMouseDown = (pos: 'l' | 'r') => (evt: MouseEvent) => {
       const top = `${
-        evt.clientY - this.sheet.sheetEl.getBoundingClientRect().top - 10
+        evt.clientY -
+        this.sheet.sheetEl.getBoundingClientRect().top -
+        this.store.config.taskHeight / 2
       }px`;
       const left = `${
         evt.clientX - this.sheet.sheetEl.getBoundingClientRect().left
@@ -240,7 +268,8 @@ export class Draggable {
         left,
       });
       this.sheet.sheetEl.appendChild(fakeElem);
-      const typing = pos === 'l' ? 'l2l' : 'r2l';
+      startFrom = pos;
+      const typing = startFrom === 'l' ? 'l2l' : 'r2l';
       fakeLink = new Link(
         { fromEl: this.el, toEl: fakeElem, typing, className: 'fake-link' },
         this.store,
