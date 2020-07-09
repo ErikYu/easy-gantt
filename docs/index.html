@@ -1,87 +1,103 @@
-<!doctype html><html lang="en"><head><meta charset="UTF/8"><title>easy-gantt-dev</title><link href="easygantt.css" rel="stylesheet"></head><body onload="onload()"><div style="position:relative;"><div id="test"></div></div><script>var tasks = [
-      {
-        id: '1',
-        text: "task1",
-        startAt: new Date("2020/05/01 08:00:00"),
-        endAt: new Date("2020/05/01 20:00:00"),
-      },
-      {
-        id: '2',
-        text: "task2",
-        startAt: new Date("2020/05/01 10:00:00"),
-        endAt: new Date("2020/05/01 22:00:00"),
-      },
-      {
-        id: '3',
-        text: "task3",
-        startAt: new Date("2020/05/02 12:00:00"),
-        endAt: new Date("2020/05/02 23:00:00"),
-      },
-      {
-        id: '4',
-        text: "task4",
-        startAt: new Date("2020/05/01 08:00:00"),
-        endAt: new Date("2020/05/01 20:00:00"),
-      },
-      {
-        id: '5',
-        text: "task5",
-        startAt: new Date("2020/05/01 10:00:00"),
-        endAt: new Date("2020/05/01 22:00:00"),
-      },
-      {
-        id: '6',
-        text: "task6",
-        startAt: new Date("2020/04/30 02:00:00"),
-        endAt: new Date("2020/04/30 12:00:00"),
-      },
-      {
-        id: '7',
-        text: "task7",
-        startAt: new Date("2020/05/01 10:00:00"),
-        endAt: new Date("2020/05/01 22:00:00"),
-      },
-      {
-        id: '8',
-        text: "task8",
-        startAt: new Date("2020/05/02 12:00:00"),
-        endAt: new Date("2020/05/02 23:00:00"),
-      },
-      {
-        id: '9',
-        text: "task9",
-        startAt: new Date("2020/05/01 08:00:00"),
-        endAt: new Date("2020/05/01 20:00:00"),
-      },
-      {
-        id: '10',
-        text: "task10",
-        startAt: new Date("2020/05/01 10:00:00"),
-        endAt: new Date("2020/05/01 22:00:00"),
-      },
-      {
-        id: '11',
-        text: "task11",
-        startAt: new Date("2020/05/01 08:00:00"),
-        endAt: new Date("2020/05/05 12:00:00"),
-      },
-      {
-        id: '12',
-        text: "task12",
-        startAt: new Date("2020/05/01 08:00:00"),
-        endAt: new Date("2020/05/05 12:00:00"),
-      },
-    ];
-    // start/at/end
-    //
-    var links = [
-      {source: '1', target: '2', typing: 'r2l'},
-      {source: '2', target: '3', typing: 'r2l'},
-      {source: '4', target: '5', typing: 'l2r'},
-      {source: '5', target: '6', typing: 'l2r'},
-      {source: '7', target: '8', typing: 'l2l'},
-      {source: '10', target: '9', typing: 'l2l'},
-    ];
-  onload = function(){
-    var inst = window.easy_gantt(document.querySelector('#test'), { tasks, links })
-  }</script><script src="easygantt.js"></script></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF/8">
+    <title>easy-gantt-dev</title>
+    <link href="easygantt.css" rel="stylesheet">
+    <link href="easygantt.css"></link>
+</head>
+<body onload="onload()">
+<div style="position:relative;">
+    <div id="test"></div>
+</div>
+<script src="./easygantt.js"></script>
+<script>var tasks = [
+  {
+    id: '1',
+    text: 'task1',
+    startAt: new Date('2020/05/01 08:00:00'),
+    endAt: new Date('2020/05/01 20:00:00'),
+  },
+  {
+    id: '2',
+    text: 'task2',
+    startAt: new Date('2020/05/01 10:00:00'),
+    endAt: new Date('2020/05/01 22:00:00'),
+  },
+  {
+    id: '3',
+    text: 'task3',
+    startAt: new Date('2020/05/02 12:00:00'),
+    endAt: new Date('2020/05/02 23:00:00'),
+  },
+  {
+    id: '4',
+    text: 'task4',
+    startAt: new Date('2020/05/01 08:00:00'),
+    endAt: new Date('2020/05/01 20:00:00'),
+  },
+  {
+    id: '5',
+    text: 'task5',
+    startAt: new Date('2020/05/01 10:00:00'),
+    endAt: new Date('2020/05/01 22:00:00'),
+  },
+  {
+    id: '6',
+    text: 'task6',
+    startAt: new Date('2020/04/30 02:00:00'),
+    endAt: new Date('2020/04/30 12:00:00'),
+  },
+  {
+    id: '7',
+    text: 'task7',
+    startAt: new Date('2020/05/01 10:00:00'),
+    endAt: new Date('2020/05/01 22:00:00'),
+  },
+  {
+    id: '8',
+    text: 'task8',
+    startAt: new Date('2020/05/02 12:00:00'),
+    endAt: new Date('2020/05/02 23:00:00'),
+  },
+  {
+    id: '9',
+    text: 'task9',
+    startAt: new Date('2020/05/01 08:00:00'),
+    endAt: new Date('2020/05/01 20:00:00'),
+  },
+  {
+    id: '10',
+    text: 'task10',
+    startAt: new Date('2020/05/01 10:00:00'),
+    endAt: new Date('2020/05/01 22:00:00'),
+  },
+  {
+    id: '11',
+    text: 'task11',
+    startAt: new Date('2020/05/01 08:00:00'),
+    endAt: new Date('2020/05/05 12:00:00'),
+  },
+  {
+    id: '12',
+    text: 'task12',
+    startAt: new Date('2020/05/01 08:00:00'),
+    endAt: new Date('2020/05/05 12:00:00'),
+  },
+];
+// start/at/end
+//
+var links = [
+  { source: '1', target: '2', typing: 'r2l' },
+  { source: '2', target: '3', typing: 'r2l' },
+  { source: '4', target: '5', typing: 'l2r' },
+  { source: '5', target: '6', typing: 'l2r' },
+  { source: '7', target: '8', typing: 'l2l' },
+  { source: '10', target: '9', typing: 'l2l' },
+];
+onload = function() {
+  var inst = window.easy_gantt(document.querySelector('#test'), { tasks, links });
+};</script>
+<script src="easygantt.js"></script>
+</body>
+</html>
