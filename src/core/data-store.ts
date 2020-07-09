@@ -7,6 +7,7 @@ export type reloadLinkFn = (itemId: string) => void;
 export class DataStore {
   config = {
     linkStartMin: 30,
+    linkHoverThick: 10,
     linkThick: 2,
     arrowSize: 6,
     lineHeight: 48,

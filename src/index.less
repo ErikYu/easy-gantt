@@ -159,14 +159,19 @@
   &-link {
     position: absolute;
     cursor: pointer;
-    background-color: @link-color;
+    background-color: transparent;
     .FlexCenter();
     &-container {
       &:hover {
-        .@{clsPrefix}-link {
+        .@{clsPrefix}-link-inner {
           box-shadow: 0 0 5px 0 @link-color;
         }
       }
+    }
+    &-inner {
+      background-color: @link-color;
+      height: 100%;
+      width: 100%;
     }
   }
 

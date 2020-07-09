@@ -38,6 +38,9 @@ export class Link {
       }`,
     });
     this.render();
+    this.el.addEventListener('contextmenu', (evt) => {
+      evt.preventDefault();
+    });
   }
 
   render() {
@@ -79,7 +82,7 @@ export class Link {
     { vDistance }: { vDistance: number },
   ) {
     const {
-      linkThick,
+      linkHoverThick,
       linkStartMin,
       arrowSize,
       lineHeight,
@@ -87,23 +90,28 @@ export class Link {
     } = this.store.config;
     this.startPos = {
       left: getEndLeft(topEl),
-      top: px2Int(topEl.style.top) + taskHeight / 2 - linkThick / 2,
+      top: px2Int(topEl.style.top) + taskHeight / 2 - linkHoverThick / 2,
     };
     const hDistance = differencePx(bottomEl.style.left, this.startPos.left);
-    if (hDistance < 2 * linkStartMin) {
-      this.drawLine(linkStartMin, 0)
-        .drawLine(0, lineHeight / 2 + linkThick, -linkThick, 0)
-        .drawLine(-(-hDistance + 2 * linkStartMin), 0, linkThick, -linkThick)
-        .drawLine(0, vDistance - lineHeight / 2 + linkThick)
-        .drawLine(linkStartMin - arrowSize, 0, 0, -linkThick);
+    if (hDistance < 2 * linkStartMin - linkHoverThick) {
+      this.drawLine('f')(linkStartMin, 0)
+        .drawLine()(0, lineHeight / 2 + linkHoverThick, -linkHoverThick, 0)
+        .drawLine()(
+          -(-hDistance + 2 * linkStartMin),
+          0,
+          linkHoverThick,
+          -linkHoverThick,
+        )
+        .drawLine()(0, vDistance - lineHeight / 2 + linkHoverThick)
+        .drawLine('l')(linkStartMin - arrowSize, 0, 0, -linkHoverThick);
     } else {
-      this.drawLine(hDistance / 2 + linkThick, 0)
-        .drawLine(0, vDistance + linkThick, -linkThick, 0)
-        .drawLine(hDistance / 2 - arrowSize, 0, 0, -linkThick);
+      this.drawLine('f')(hDistance / 2 + linkHoverThick, 0)
+        .drawLine()(0, vDistance + linkHoverThick, -linkHoverThick, 0)
+        .drawLine('l')(hDistance / 2 - arrowSize, 0, 0, -linkHoverThick);
     }
     this.drawPosArrow(
       this.startPos.left,
-      this.startPos.top - arrowSize + linkThick / 2,
+      this.startPos.top - arrowSize + linkHoverThick / 2,
     );
   }
 
@@ -113,7 +121,7 @@ export class Link {
     { vDistance }: { vDistance: number },
   ) {
     const {
-      linkThick,
+      linkHoverThick,
       linkStartMin,
       arrowSize,
       lineHeight,
@@ -121,23 +129,33 @@ export class Link {
     } = this.store.config;
     this.startPos = {
       left: getEndLeft(topEl),
-      top: px2Int(topEl.style.top) + taskHeight / 2 - linkThick / 2,
+      top: px2Int(topEl.style.top) + taskHeight / 2 - linkHoverThick / 2,
     };
     const hDistance = differencePx(bottomEl.style.left, this.startPos.left);
     this.drawNegArrow(
       this.startPos.left - arrowSize,
-      this.startPos.top - arrowSize + linkThick / 2,
+      this.startPos.top - arrowSize + linkHoverThick / 2,
     );
-    if (hDistance < 2 * linkStartMin) {
-      this.drawLine(linkStartMin - arrowSize, 0, arrowSize, 0)
-        .drawLine(0, lineHeight / 2 + linkThick, -linkThick, 0)
-        .drawLine(-(-hDistance + 2 * linkStartMin), 0, linkThick, -linkThick)
-        .drawLine(0, vDistance - lineHeight / 2 + linkThick)
-        .drawLine(linkStartMin, 0, 0, -linkThick);
+    if (hDistance < 2 * linkStartMin - linkHoverThick) {
+      this.drawLine('f')(linkStartMin - arrowSize, 0, arrowSize, 0)
+        .drawLine()(0, lineHeight / 2 + linkHoverThick, -linkHoverThick, 0)
+        .drawLine()(
+          -(-hDistance + 2 * linkStartMin),
+          0,
+          linkHoverThick,
+          -linkHoverThick,
+        )
+        .drawLine()(0, vDistance - lineHeight / 2 + linkHoverThick)
+        .drawLine('l')(linkStartMin, 0, 0, -linkHoverThick);
     } else {
-      this.drawLine(hDistance / 2 + linkThick - arrowSize, 0, arrowSize, 0)
-        .drawLine(0, vDistance + linkThick, -linkThick, 0)
-        .drawLine(hDistance / 2, 0, 0, -linkThick);
+      this.drawLine('f')(
+        hDistance / 2 + linkHoverThick - arrowSize,
+        0,
+        arrowSize,
+        0,
+      )
+        .drawLine()(0, vDistance + linkHoverThick, -linkHoverThick, 0)
+        .drawLine('l')(hDistance / 2, 0, 0, -linkHoverThick);
     }
   }
 
@@ -147,7 +165,7 @@ export class Link {
     { vDistance }: { vDistance: number },
   ) {
     const {
-      linkThick,
+      linkHoverThick,
       linkStartMin,
       arrowSize,
       lineHeight,
@@ -155,26 +173,41 @@ export class Link {
     } = this.store.config;
     this.startPos = {
       left: getStartLeft(topEl),
-      top: px2Int(topEl.style.top) + taskHeight / 2 - linkThick / 2,
+      top: px2Int(topEl.style.top) + taskHeight / 2 - linkHoverThick / 2,
     };
     const hDistance = differencePx(
       bottomEl.getBoundingClientRect().right,
       topEl.getBoundingClientRect().left,
     );
-    if (hDistance <= -2 * linkStartMin) {
-      this.drawLine(hDistance / 2 - linkThick, 0)
-        .drawLine(0, vDistance + linkThick)
-        .drawLine(hDistance / 2 + arrowSize, 0, linkThick, -linkThick);
+    if (hDistance <= -2 * linkStartMin + linkHoverThick) {
+      this.drawLine('f')(hDistance / 2 - linkHoverThick, 0)
+        .drawLine()(0, vDistance + linkHoverThick)
+        .drawLine('l')(
+        hDistance / 2 + arrowSize,
+        0,
+        linkHoverThick,
+        -linkHoverThick,
+      );
     } else {
-      this.drawLine(-linkStartMin, 0)
-        .drawLine(0, lineHeight / 2 + linkThick)
-        .drawLine(hDistance + 2 * linkStartMin, 0, 0, -linkThick)
-        .drawLine(0, vDistance - lineHeight / 2 + linkThick, -linkThick, 0)
-        .drawLine(-linkStartMin + arrowSize, 0, linkThick, -linkThick);
+      this.drawLine('f')(-linkStartMin, 0)
+        .drawLine()(0, lineHeight / 2 + linkHoverThick)
+        .drawLine()(hDistance + 2 * linkStartMin, 0, 0, -linkHoverThick)
+        .drawLine()(
+          0,
+          vDistance - lineHeight / 2 + linkHoverThick,
+          -linkHoverThick,
+          0,
+        )
+        .drawLine('l')(
+        -linkStartMin + arrowSize,
+        0,
+        linkHoverThick,
+        -linkHoverThick,
+      );
     }
     this.drawNegArrow(
       this.startPos.left - 2 * arrowSize,
-      this.startPos.top - arrowSize + linkThick / 2,
+      this.startPos.top - arrowSize + linkHoverThick / 2,
     );
   }
 
@@ -184,7 +217,7 @@ export class Link {
     { vDistance }: { vDistance: number },
   ) {
     const {
-      linkThick,
+      linkHoverThick,
       linkStartMin,
       arrowSize,
       lineHeight,
@@ -192,7 +225,7 @@ export class Link {
     } = this.store.config;
     this.startPos = {
       left: getStartLeft(topEl),
-      top: px2Int(topEl.style.top) + taskHeight / 2 - linkThick / 2,
+      top: px2Int(topEl.style.top) + taskHeight / 2 - linkHoverThick / 2,
     };
     const hDistance = differencePx(
       bottomEl.getBoundingClientRect().right,
@@ -200,18 +233,28 @@ export class Link {
     );
     this.drawPosArrow(
       this.startPos.left - arrowSize,
-      this.startPos.top - arrowSize + linkThick / 2,
+      this.startPos.top - arrowSize + linkHoverThick / 2,
     );
-    if (hDistance <= -2 * linkStartMin) {
-      this.drawLine(hDistance / 2 - linkThick + arrowSize, 0, -arrowSize, 0)
-        .drawLine(0, vDistance + linkThick)
-        .drawLine(hDistance / 2, 0, linkThick, -linkThick);
+    if (hDistance <= -2 * linkStartMin + linkHoverThick) {
+      this.drawLine('f')(
+        hDistance / 2 - linkHoverThick + arrowSize,
+        0,
+        -arrowSize,
+        0,
+      )
+        .drawLine()(0, vDistance + linkHoverThick)
+        .drawLine('l')(hDistance / 2, 0, linkHoverThick, -linkHoverThick);
     } else {
-      this.drawLine(-linkStartMin + arrowSize, 0, -arrowSize, 0)
-        .drawLine(0, lineHeight / 2 + linkThick)
-        .drawLine(hDistance + 2 * linkStartMin, 0, 0, -linkThick)
-        .drawLine(0, vDistance - lineHeight / 2 + linkThick, -linkThick, 0)
-        .drawLine(-linkStartMin, 0, linkThick, -linkThick);
+      this.drawLine('f')(-linkStartMin + arrowSize, 0, -arrowSize, 0)
+        .drawLine()(0, lineHeight / 2 + linkHoverThick)
+        .drawLine()(hDistance + 2 * linkStartMin, 0, 0, -linkHoverThick)
+        .drawLine()(
+          0,
+          vDistance - lineHeight / 2 + linkHoverThick,
+          -linkHoverThick,
+          0,
+        )
+        .drawLine('l')(-linkStartMin, 0, linkHoverThick, -linkHoverThick);
     }
   }
 
@@ -221,36 +264,41 @@ export class Link {
     { vDistance }: { vDistance: number },
   ) {
     const {
-      linkThick,
+      linkHoverThick,
       linkStartMin,
       arrowSize,
       taskHeight,
     } = this.store.config;
     this.startPos = {
       left: getEndLeft(topEl),
-      top: px2Int(topEl.style.top) + taskHeight / 2 - linkThick / 2,
+      top: px2Int(topEl.style.top) + taskHeight / 2 - linkHoverThick / 2,
     };
     const hDistance = differencePx(
       bottomEl.getBoundingClientRect().right,
       topEl.getBoundingClientRect().right,
     );
     if (hDistance < 0) {
-      this.drawLine(linkStartMin, 0)
-        .drawLine(0, vDistance + linkThick, -linkThick, 0)
-        .drawLine(
-          hDistance - linkStartMin + arrowSize,
-          0,
-          linkThick,
-          -linkThick,
-        );
+      this.drawLine('f')(linkStartMin, 0)
+        .drawLine()(0, vDistance + linkHoverThick, -linkHoverThick, 0)
+        .drawLine('l')(
+        hDistance - linkStartMin + arrowSize,
+        0,
+        linkHoverThick,
+        -linkHoverThick,
+      );
     } else {
-      this.drawLine(hDistance + linkStartMin, 0)
-        .drawLine(0, vDistance + linkThick, -linkThick, 0)
-        .drawLine(-linkStartMin + arrowSize, 0, linkThick, -linkThick);
+      this.drawLine('f')(hDistance + linkStartMin, 0)
+        .drawLine()(0, vDistance + linkHoverThick, -linkHoverThick, 0)
+        .drawLine('l')(
+        -linkStartMin + arrowSize,
+        0,
+        linkHoverThick,
+        -linkHoverThick,
+      );
     }
     this.drawNegArrow(
       this.startPos.left - 2 * arrowSize,
-      this.startPos.top - arrowSize + linkThick / 2,
+      this.startPos.top - arrowSize + linkHoverThick / 2,
     );
   }
 
@@ -260,14 +308,14 @@ export class Link {
     { vDistance }: { vDistance: number },
   ) {
     const {
-      linkThick,
+      linkHoverThick,
       linkStartMin,
       arrowSize,
       taskHeight,
     } = this.store.config;
     this.startPos = {
       left: getEndLeft(topEl),
-      top: px2Int(topEl.style.top) + taskHeight / 2 - linkThick / 2,
+      top: px2Int(topEl.style.top) + taskHeight / 2 - linkHoverThick / 2,
     };
     const hDistance = differencePx(
       bottomEl.getBoundingClientRect().right,
@@ -275,16 +323,21 @@ export class Link {
     );
     this.drawNegArrow(
       this.startPos.left - arrowSize,
-      this.startPos.top - arrowSize + linkThick / 2,
+      this.startPos.top - arrowSize + linkHoverThick / 2,
     );
     if (hDistance < 0) {
-      this.drawLine(linkStartMin - arrowSize, 0, arrowSize, 0)
-        .drawLine(0, vDistance + linkThick, -linkThick, 0)
-        .drawLine(hDistance - linkStartMin, 0, linkThick, -linkThick);
+      this.drawLine('f')(linkStartMin - arrowSize, 0, arrowSize, 0)
+        .drawLine()(0, vDistance + linkHoverThick, -linkHoverThick, 0)
+        .drawLine('l')(
+        hDistance - linkStartMin,
+        0,
+        linkHoverThick,
+        -linkHoverThick,
+      );
     } else {
-      this.drawLine(hDistance + linkStartMin - arrowSize, 0, arrowSize, 0)
-        .drawLine(0, vDistance + linkThick, -linkThick, 0)
-        .drawLine(-linkStartMin, 0, linkThick, -linkThick);
+      this.drawLine('f')(hDistance + linkStartMin - arrowSize, 0, arrowSize, 0)
+        .drawLine()(0, vDistance + linkHoverThick, -linkHoverThick, 0)
+        .drawLine('l')(-linkStartMin, 0, linkHoverThick, -linkHoverThick);
     }
   }
 
@@ -294,28 +347,33 @@ export class Link {
     { vDistance }: { vDistance: number },
   ) {
     const {
-      linkThick,
+      linkHoverThick,
       linkStartMin,
       arrowSize,
       taskHeight,
     } = this.store.config;
     this.startPos = {
       left: getStartLeft(topEl),
-      top: px2Int(topEl.style.top) + taskHeight / 2 - linkThick / 2,
+      top: px2Int(topEl.style.top) + taskHeight / 2 - linkHoverThick / 2,
     };
     const hDistance = differencePx(bottomEl.style.left, topEl.style.left);
     if (hDistance < 0) {
-      this.drawLine(hDistance - linkStartMin, 0)
-        .drawLine(0, vDistance + linkThick)
-        .drawLine(linkStartMin - arrowSize, 0, 0, -linkThick);
+      this.drawLine('f')(hDistance - linkStartMin, 0)
+        .drawLine()(0, vDistance + linkHoverThick)
+        .drawLine('l')(linkStartMin - arrowSize, 0, 0, -linkHoverThick);
     } else {
-      this.drawLine(-linkStartMin, 0)
-        .drawLine(0, vDistance + linkThick)
-        .drawLine(hDistance + linkStartMin - arrowSize, 0, 0, -linkThick);
+      this.drawLine('f')(-linkStartMin, 0)
+        .drawLine()(0, vDistance + linkHoverThick)
+        .drawLine('l')(
+        hDistance + linkStartMin - arrowSize,
+        0,
+        0,
+        -linkHoverThick,
+      );
     }
     this.drawPosArrow(
       this.startPos.left,
-      this.startPos.top - arrowSize + linkThick / 2,
+      this.startPos.top - arrowSize + linkHoverThick / 2,
     );
   }
 
@@ -325,45 +383,53 @@ export class Link {
     { vDistance }: { vDistance: number },
   ) {
     const {
-      linkThick,
+      linkHoverThick,
       linkStartMin,
       arrowSize,
       taskHeight,
     } = this.store.config;
     this.startPos = {
       left: getStartLeft(topEl),
-      top: px2Int(topEl.style.top) + taskHeight / 2 - linkThick / 2,
+      top: px2Int(topEl.style.top) + taskHeight / 2 - linkHoverThick / 2,
     };
     const hDistance = differencePx(bottomEl.style.left, topEl.style.left);
     this.drawPosArrow(
       this.startPos.left - arrowSize,
-      this.startPos.top - arrowSize + linkThick / 2,
+      this.startPos.top - arrowSize + linkHoverThick / 2,
     );
     if (hDistance < 0) {
-      this.drawLine(hDistance - linkStartMin + arrowSize, 0, -arrowSize, 0)
-        .drawLine(0, vDistance + linkThick)
-        .drawLine(linkStartMin, 0, 0, -linkThick);
+      this.drawLine('f')(hDistance - linkStartMin + arrowSize, 0, -arrowSize, 0)
+        .drawLine()(0, vDistance + linkHoverThick)
+        .drawLine('l')(linkStartMin, 0, 0, -linkHoverThick);
     } else {
-      this.drawLine(-linkStartMin + arrowSize, 0, -arrowSize, 0)
-        .drawLine(0, vDistance + linkThick)
-        .drawLine(hDistance + linkStartMin, 0, 0, -linkThick);
+      this.drawLine('f')(-linkStartMin + arrowSize, 0, -arrowSize, 0)
+        .drawLine()(0, vDistance + linkHoverThick)
+        .drawLine('l')(hDistance + linkStartMin, 0, 0, -linkHoverThick);
     }
   }
 
   /**
-   * @param x
-   * @param y
-   * @param shiftX shift the start pointer before start drawing
-   * @param shiftY shift the start pointer before start drawing
+   * @param invokeIndex
+   * // @param x
+   * // @param y
+   * // @param shiftX shift the start pointer before start drawing
+   * // @param shiftY shift the start pointer before start drawing
    */
-  private drawLine(x: number, y: number, shiftX = 0, shiftY = 0) {
+  drawLine = (invokeIndex: 'f' | 'l' = null) => (
+    x: number,
+    y: number,
+    shiftX = 0,
+    shiftY = 0,
+  ) => {
     this.startPos.left += shiftX;
     this.startPos.top += shiftY;
-    this.el.appendChild(this.d(this.startPos.left, this.startPos.top, x, y));
+    this.el.appendChild(
+      this.d(this.startPos.left, this.startPos.top, x, y, invokeIndex),
+    );
     this.startPos.left += x;
     this.startPos.top += y;
     return this;
-  }
+  };
 
   private drawPosArrow(left, top) {
     this.el.appendChild(
@@ -399,9 +465,17 @@ export class Link {
    * @param top 起始点top
    * @param x 水平方向移动距离
    * @param y 竖直方向移动距离
+   * @param invokeIndex
    */
-  private d(left: number, top: number, x: number, y: number) {
-    const { linkThick } = this.store.config;
+  private d(
+    left: number,
+    top: number,
+    x: number,
+    y: number,
+    invokeIndex: 'f' | 'l' | null,
+  ) {
+    console.log(invokeIndex);
+    const { linkHoverThick, linkThick } = this.store.config;
     // if ((x === 0 && y === 0) || (x !== 0 && y !== 0)) {
     //   throw Error(`Cannot draw this line： ${JSON.stringify({x,y})}`);
     // }
@@ -409,25 +483,51 @@ export class Link {
     let realTop;
     let width;
     let height: number;
+    const paddingStyles: Partial<CSSStyleDeclaration> = {
+      paddingTop: `${linkHoverThick / 2 - linkThick / 2}px`,
+      paddingRight: `${linkHoverThick / 2 - linkThick / 2}px`,
+      paddingBottom: `${linkHoverThick / 2 - linkThick / 2}px`,
+      paddingLeft: `${linkHoverThick / 2 - linkThick / 2}px`,
+    };
     if (x < 0) {
+      // <-
       realLeft = left + x;
       width = -x;
       realTop = top;
-      height = linkThick;
+      height = linkHoverThick;
+      switch (invokeIndex) {
+        case 'f':
+          paddingStyles.paddingRight = '0px';
+          break;
+        case 'l':
+          paddingStyles.paddingLeft = '0px';
+          break;
+      }
     } else if (x > 0) {
+      // ->
       realLeft = left;
       width = x;
       realTop = top;
-      height = linkThick;
+      height = linkHoverThick;
+      switch (invokeIndex) {
+        case 'f':
+          paddingStyles.paddingLeft = '0px';
+          break;
+        case 'l':
+          paddingStyles.paddingRight = '0px';
+          break;
+      }
     }
     if (y < 0) {
+      // ^
       realLeft = left;
-      width = linkThick;
+      width = linkHoverThick;
       realTop = top + y;
       height = -y;
     } else if (y > 0) {
+      // v
       realLeft = left;
-      width = linkThick;
+      width = linkHoverThick;
       realTop = top;
       height = y;
     }
@@ -439,7 +539,14 @@ export class Link {
         top: `${realTop}px`,
         width: `${width}px`,
         height: `${height}px`,
+        ...paddingStyles,
       },
+      children: [
+        g({
+          tag: 'div',
+          className: `${ClsPrefix}-link-inner`,
+        }),
+      ],
     });
   }
 }
