@@ -97,6 +97,7 @@ export class Draggable {
     this.bindRightResizer();
     this.bindProgressResizer();
     this.bindPointer();
+    this.bindHover();
   }
 
   bindProgressResizer() {
@@ -280,5 +281,14 @@ export class Draggable {
     };
     this.leftPointerEl.addEventListener('mousedown', onMouseDown('l'));
     this.rightPointerEl.addEventListener('mousedown', onMouseDown('r'));
+  }
+
+  bindHover() {
+    this.el.addEventListener('mouseenter', (evt) => {
+      this.store.singletonContainer.taskTooltip.setTask(this.item).show(evt.pageX, this.el.getBoundingClientRect().bottom + 5);
+    })
+    this.el.addEventListener('mouseleave', () => {
+      this.store.singletonContainer.taskTooltip.hide()
+    })
   }
 }

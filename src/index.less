@@ -6,6 +6,7 @@
 @task-index: 100;
 @link-index: 90;
 @fake-link-index: 110;
+@tooltip-index: 200;
 
 // related to js file, do not change
 @line-height: 48px;
@@ -24,6 +25,7 @@
 }
 
 .@{clsPrefix} {
+  background-color: @bg-color;
   display: flex;
   &-tree {
     width: 500px;
@@ -188,6 +190,20 @@
     }
     &.to-left {
       border-left-color: transparent !important;
+    }
+  }
+
+  &-tooltip {
+    display: none;
+    position: fixed;
+    z-index: @tooltip-index;
+    background-color: #fff;
+    box-shadow: rgba(0, 0, 0, 0.2) 0px 2px 1px -1px, rgba(0, 0, 0, 0.14) 0px 1px 1px 0px, rgba(0, 0, 0, 0.12) 0px 1px 3px 0px;
+    &-content {
+      padding: 12px;
+      color: @helper-text;
+      font-size: @helper-size;
+      line-height: @helper-size + 10;
     }
   }
 }

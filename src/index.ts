@@ -5,6 +5,7 @@ import './index.less';
 import { Sheet } from './component/sheet';
 import { g } from './core/dom';
 import { ClsPrefix } from './core/constant';
+import { TaskTooltip } from './component/task-tooltip';
 
 class EasyGantt {
   el: HTMLElement;
@@ -18,6 +19,7 @@ class EasyGantt {
     this.globalStore = new DataStore(data);
     this.treeEl = new Tree(this.globalStore);
     this.sheetEl = new Sheet(this.globalStore);
+    this.el.appendChild((new TaskTooltip(this.globalStore)).el);
     this.el.appendChild(this.treeEl.el);
     this.el.appendChild(this.sheetEl.el);
   }

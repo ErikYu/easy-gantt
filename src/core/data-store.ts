@@ -1,3 +1,5 @@
+import { TaskTooltip } from '../component/task-tooltip';
+
 export const EVT = {
   reloadLink: 'reloadLink',
 };
@@ -12,7 +14,12 @@ export class DataStore {
     arrowSize: 6,
     lineHeight: 48,
     taskHeight: 40,
+    taskTooltipTemplate: null,
   };
+
+  singletonContainer: {
+    taskTooltip?: TaskTooltip;
+  } = {};
 
   totalStart: Date = new Date('2020/04/30 00:00:00');
   totalEnd: Date = new Date('2020/05/10 00:00:00');
