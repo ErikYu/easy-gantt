@@ -1,15 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF/8">
-    <title><%= htmlWebpackPlugin.options.title %></title>
-</head>
-<body onload="onload()">
-<div style="position:relative;">
-    <div id="test"></div>
-</div>
-<script>
-    var tasks = [
+<!doctype html><html lang="en"><head><meta charset="UTF/8"><title>easy-gantt-dev</title><link href="easygantt.css" rel="stylesheet"></head><body onload="onload()"><div style="position:relative;"><div id="test"></div></div><script>var tasks = [
       {
         id: '1',
         text: "task1",
@@ -95,7 +84,4 @@
     ];
   onload = function(){
     var inst = window.easy_gantt(document.querySelector('#test'), { tasks, links })
-  }
-</script>
-</body>
-</html>
+  }</script><script src="easygantt.js"></script></body></html>

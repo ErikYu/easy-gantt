@@ -1,0 +1,176 @@
+.easy-gantt * {
+  box-sizing: border-box;
+  font-family: Arial, serif;
+  color: rgba(0, 0, 0, 0.87);
+}
+.easy-gantt {
+  background-color: #fafafa;
+  display: flex;
+}
+.easy-gantt-tree {
+  width: 500px;
+  border-right: 1px solid #e0e0e0;
+}
+.easy-gantt-tree-header {
+  display: flex;
+  height: 40px;
+  line-height: 40px;
+  border-bottom: 1px solid #e0e0e0;
+  border-top: 1px solid #e0e0e0;
+}
+.easy-gantt-tree-header > div {
+  flex: 1;
+}
+.easy-gantt-tree-content-line {
+  display: flex;
+  height: 48px;
+  line-height: 48px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  border-bottom: 1px solid #e0e0e0;
+}
+.easy-gantt-tree-content-line > span {
+  flex: 1;
+}
+.easy-gantt-sheet {
+  overflow: auto;
+}
+.easy-gantt-sheet-header {
+  width: auto;
+  height: 40px;
+  display: flex;
+}
+.easy-gantt-sheet-header-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-right: 1px solid #e0e0e0;
+  border-bottom: 1px solid #e0e0e0;
+  border-top: 1px solid #e0e0e0;
+}
+.easy-gantt-sheet-content {
+  position: relative;
+}
+.easy-gantt-item {
+  position: absolute;
+  border: 1px solid #632bca;
+  height: 40px;
+  white-space: nowrap;
+  user-select: none;
+  cursor: pointer;
+  background: #8551d8;
+  border-radius: 2px;
+  z-index: 100;
+}
+.easy-gantt-item .pointer {
+  position: absolute;
+  display: none;
+  width: 10px;
+  height: 10px;
+  top: calc(50% - 5px);
+  background-color: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 50%;
+}
+.easy-gantt-item-content {
+  color: #fff;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  z-index: 10;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 40px;
+}
+.easy-gantt-item-progress {
+  z-index: 5;
+  position: absolute;
+  height: 100%;
+  background: #6e30d0;
+}
+.easy-gantt-item .task-resizer {
+  position: absolute;
+  width: 30px;
+  height: 100%;
+  background: transparent;
+}
+.easy-gantt-item .task-resizer-left {
+  left: -20px;
+  cursor: w-resize;
+}
+.easy-gantt-item .task-resizer-right {
+  right: -20px;
+  cursor: e-resize;
+}
+.easy-gantt-item .progress-resizer {
+  display: none;
+  z-index: 12;
+  width: 16px;
+  height: 16px;
+  position: absolute;
+  cursor: col-resize;
+  background: url(841791c4b2580e30ea13ced272cd6274.png) no-repeat;
+  background-size: contain;
+  background-position-x: center;
+  top: calc(100% - 7px);
+  margin-left: -8px;
+}
+.easy-gantt-item:hover .pointer {
+  display: block;
+}
+.easy-gantt-item:hover .progress-resizer {
+  display: block;
+}
+.easy-gantt-link-container {
+  position: absolute;
+  z-index: 90;
+}
+.easy-gantt-link-container.fake-link {
+  z-index: 110;
+}
+.easy-gantt-link {
+  position: absolute;
+  cursor: pointer;
+  background-color: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.easy-gantt-link-container:hover .easy-gantt-link-inner {
+  box-shadow: 0 0 5px 0 #a5d851;
+}
+.easy-gantt-link-inner {
+  background-color: #a5d851;
+  height: 100%;
+  width: 100%;
+}
+.easy-gantt-link-arrow {
+  position: absolute;
+  border-style: solid;
+  border-color: #a5d851;
+  border-top-color: transparent !important;
+  border-bottom-color: transparent !important;
+  width: 0;
+  height: 0;
+}
+.easy-gantt-link-arrow.to-right {
+  border-right-color: transparent !important;
+}
+.easy-gantt-link-arrow.to-left {
+  border-left-color: transparent !important;
+}
+.easy-gantt-tooltip {
+  display: none;
+  position: fixed;
+  z-index: 200;
+  background-color: #fff;
+  box-shadow: rgba(0, 0, 0, 0.2) 0px 2px 1px -1px, rgba(0, 0, 0, 0.14) 0px 1px 1px 0px, rgba(0, 0, 0, 0.12) 0px 1px 3px 0px;
+}
+.easy-gantt-tooltip-content {
+  padding: 12px;
+  color: rgba(0, 0, 0, 0.6);
+  font-size: 12px;
+  line-height: 22px;
+}
+
