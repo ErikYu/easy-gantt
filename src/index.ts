@@ -19,7 +19,7 @@ class EasyGantt {
     this.globalStore = new DataStore(data);
     this.treeEl = new Tree(this.globalStore);
     this.sheetEl = new Sheet(this.globalStore);
-    this.el.appendChild((new TaskTooltip(this.globalStore)).el);
+    this.el.appendChild(new TaskTooltip(this.globalStore).el);
     this.el.appendChild(this.treeEl.el);
     this.el.appendChild(this.sheetEl.el);
   }

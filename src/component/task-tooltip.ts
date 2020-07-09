@@ -8,12 +8,20 @@ const defaultToolTipTpl = (task: GanttItem): string => {
   return `
   <div class="${ClsPrefix}-tooltip-content">
     <div><strong>Task: </strong>${task.text}</div>
-    <div><strong>Start: </strong>${format(task.startAt, 'yyyy/MM/dd HH:mm:ss')}</div>
-    <div><strong>End: </strong>${format(task.endAt, 'yyyy/MM/dd HH:mm:ss')}</div>
-    <div><strong>Progress: </strong>${task.progress}</div>
+    <div><strong>Start: </strong>${format(
+      task.startAt,
+      'yyyy/MM/dd HH:mm:ss',
+    )}</div>
+    <div><strong>End: </strong>${format(
+      task.endAt,
+      'yyyy/MM/dd HH:mm:ss',
+    )}</div>
+    <div><strong>Progress: </strong>${((task.progress || 0) * 100).toFixed(
+      0,
+    )}%</div>
   </div> 
-  `
-}
+  `;
+};
 
 export class TaskTooltip {
   el: HTMLElement;
@@ -21,9 +29,8 @@ export class TaskTooltip {
     this.el = g({
       tag: 'div',
       className: `${ClsPrefix}-tooltip`,
-      styles: {
-      }
-    })
+      styles: {},
+    });
     this.store.singletonContainer.taskTooltip = this;
   }
 
@@ -43,12 +50,12 @@ export class TaskTooltip {
       display: 'block',
       left: `${left}px`,
       top: `${top}px`,
-    })
+    });
   }
 
   hide() {
     setStyle(this.el, {
       display: 'none',
-    })
+    });
   }
 }

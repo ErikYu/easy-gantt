@@ -26,7 +26,6 @@ export class Draggable {
   startScreenX: number;
   startLeft: string;
   initWidth: number;
-  initProgress: number; // 0 - 1
 
   constructor(
     public item: GanttItem,
@@ -102,28 +101,37 @@ export class Draggable {
 
   bindProgressResizer() {
     const onMoveFn = (evt) => {
-      const moveDistance = evt.screenX - this.startScreenX;
-      this.progressEl.style.width = addPx(
-        this.contentEl.getBoundingClientRect().width * this.initProgress,
-        moveDistance,
-      );
-      this.progressResizer.style.left = addPx(
-        this.contentEl.getBoundingClientRect().width * this.initProgress,
-        moveDistance,
-      );
+      let moveDistance = evt.movementX;
+      const pgsWidth = this.progressEl.getBoundingClientRect().width;
+      const contentWidth = this.contentEl.getBoundingClientRect().width;
+      if (pgsWidth + moveDistance > contentWidth) {
+        this.progressEl.style.width = `${contentWidth}px`;
+        this.progressResizer.style.left = `${contentWidth}px`;
+      } else if (pgsWidth + moveDistance < 0) {
+        this.progressEl.style.width = '0px';
+        this.progressResizer.style.left = '0px';
+      } else {
+        this.progressEl.style.width = addPx(
+          this.progressEl.style.width,
+          moveDistance,
+        );
+        this.progressResizer.style.left = addPx(
+          this.progressResizer.style.left,
+          moveDistance,
+        );
+      }
     };
     const onMouseUp = (evt) => {
       this.startScreenX = evt.screenX;
-      this.initProgress = GetProgressByEl(this.contentEl, this.progressEl);
       document.removeEventListener('mousemove', onMoveFn);
       document.removeEventListener('mouseup', onMouseUp);
+      this.item.progress = GetProgressByEl(this.contentEl, this.progressEl);
     };
     this.progressResizer.onmousedown = (evt) => {
       if (evt.detail !== 1) {
         return;
       }
       this.startScreenX = evt.screenX;
-      this.initProgress = GetProgressByEl(this.contentEl, this.progressEl);
       document.addEventListener('mousemove', onMoveFn);
       document.addEventListener('mouseup', onMouseUp);
     };
@@ -165,13 +173,12 @@ export class Draggable {
 
   bindLeftResizer() {
     const onMoveFn = (evt) => {
-      const moveDistance = evt.screenX - this.startScreenX;
-      this.el.style.left = addPx(this.startLeft, moveDistance);
-      this.el.style.width = addPx(this.initWidth, -moveDistance);
+      const moveDistance = evt.movementX;
+      this.el.style.left = addPx(this.el.style.left, moveDistance);
+      this.el.style.width = addPx(this.el.style.width, -moveDistance);
       this.moveStart();
     };
     const onMouseUp = (evt) => {
-      this.startScreenX = evt.screenX;
       this.initWidth = this.el.getBoundingClientRect().width;
       this.startLeft = this.el.style.left;
       document.removeEventListener('mousemove', onMoveFn);
@@ -180,7 +187,6 @@ export class Draggable {
       if (evt.detail !== 1) {
         return;
       }
-      this.startScreenX = evt.screenX;
       this.initWidth = this.el.getBoundingClientRect().width;
       document.addEventListener('mousemove', onMoveFn);
       document.addEventListener('mouseup', onMouseUp);
@@ -189,12 +195,11 @@ export class Draggable {
 
   bindRightResizer() {
     const onMoveFn = (evt) => {
-      const moveDistance = evt.screenX - this.startScreenX;
-      this.el.style.width = addPx(this.initWidth, moveDistance);
+      const moveDistance = evt.movementX;
+      this.el.style.width = addPx(this.el.style.width, moveDistance);
       this.moveEnd();
     };
     const onMouseUp = (evt) => {
-      this.startScreenX = evt.screenX;
       this.initWidth = this.el.getBoundingClientRect().width;
       document.removeEventListener('mousemove', onMoveFn);
       document.removeEventListener('mouseup', onMouseUp);
@@ -203,7 +208,6 @@ export class Draggable {
       if (evt.detail !== 1) {
         return;
       }
-      this.startScreenX = evt.screenX;
       this.initWidth = this.el.getBoundingClientRect().width;
       document.addEventListener('mousemove', onMoveFn);
       document.addEventListener('mouseup', onMouseUp);
@@ -285,10 +289,12 @@ export class Draggable {
 
   bindHover() {
     this.el.addEventListener('mouseenter', (evt) => {
-      this.store.singletonContainer.taskTooltip.setTask(this.item).show(evt.pageX, this.el.getBoundingClientRect().bottom + 5);
-    })
+      this.store.singletonContainer.taskTooltip
+        .setTask(this.item)
+        .show(evt.pageX, this.el.getBoundingClientRect().bottom + 5);
+    });
     this.el.addEventListener('mouseleave', () => {
-      this.store.singletonContainer.taskTooltip.hide()
-    })
+      this.store.singletonContainer.taskTooltip.hide();
+    });
   }
 }
