@@ -2,7 +2,7 @@ import { differenceInSeconds } from 'date-fns';
 import { g, setStyle } from '../core/dom';
 import { ClsPrefix } from '../core/constant';
 import { GanttItem } from '../model/data';
-import { DataStore, EVT } from '../core/data-store';
+import { DataStore, dpr, EVT } from '../core/data-store';
 import {
   addPx,
   getEndAtByEl,
@@ -101,7 +101,7 @@ export class Draggable {
 
   bindProgressResizer() {
     const onMoveFn = (evt) => {
-      let moveDistance = evt.movementX;
+      let moveDistance = evt.movementX / dpr();
       const pgsWidth = this.progressEl.getBoundingClientRect().width;
       const contentWidth = this.contentEl.getBoundingClientRect().width;
       if (pgsWidth + moveDistance > contentWidth) {
@@ -173,7 +173,7 @@ export class Draggable {
 
   bindLeftResizer() {
     const onMoveFn = (evt) => {
-      const moveDistance = evt.movementX;
+      const moveDistance = evt.movementX / dpr();
       this.el.style.left = addPx(this.el.style.left, moveDistance);
       this.el.style.width = addPx(this.el.style.width, -moveDistance);
       this.moveStart();
@@ -195,7 +195,7 @@ export class Draggable {
 
   bindRightResizer() {
     const onMoveFn = (evt) => {
-      const moveDistance = evt.movementX;
+      const moveDistance = evt.movementX / dpr();
       this.el.style.width = addPx(this.el.style.width, moveDistance);
       this.moveEnd();
     };
@@ -225,8 +225,8 @@ export class Draggable {
     let fakeLink: Link = null;
     let startFrom: 'l' | 'r';
     const onMoveFn = (evt) => {
-      fakeElem.style.left = addPx(fakeElem.style.left, evt.movementX);
-      fakeElem.style.top = addPx(fakeElem.style.top, evt.movementY);
+      fakeElem.style.left = addPx(fakeElem.style.left, evt.movementX / dpr());
+      fakeElem.style.top = addPx(fakeElem.style.top, evt.movementY / dpr());
       fakeLink.render();
     };
     const onMouseUp = (evt: MouseEvent) => {
