@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.ts",
   "scripts": {
-    "dev": "webpack-dev-server --open --config build/webpack.dev.js",
+    "dev": "webpack-dev-server --config build/webpack.dev.js",
     "build": "webpack --config build/webpack.prod.js",
     "prettier": "prettier --write \"src/**/*.ts\"",
     "lint": "eslint ./src/**/*.ts",

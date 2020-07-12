@@ -1,4 +1,7 @@
 import { TaskTooltip } from '../component/task-tooltip';
+import { Sheet } from '../component/sheet';
+import { Tree } from '../component/tree';
+import { differenceInDays } from 'date-fns';
 
 export const EVT = {
   reloadLink: 'reloadLink',
@@ -37,7 +40,17 @@ export function dpr() {
 }
 
 export class DataStore {
+  get contentVHeight(): number {
+    return this.data.length * this.config.lineHeight;
+  }
+
+  get contentHWidth(): number {
+    return this.unitWidth * differenceInDays(this.totalEnd, this.totalStart);
+  }
+
   config = {
+    containerHeight: 0,
+    containerWidth: 0,
     linkStartMin: 30,
     linkHoverThick: 10,
     linkThick: 2,
@@ -49,6 +62,8 @@ export class DataStore {
 
   singletonContainer: {
     taskTooltip?: TaskTooltip;
+    sheet?: Sheet;
+    tree?: Tree;
   } = {};
 
   totalStart: Date = new Date('2020/04/30 00:00:00');
@@ -60,6 +75,12 @@ export class DataStore {
   constructor(val) {
     this.data = val.tasks;
     this.links = val.links;
+  }
+
+  setContainer(el: HTMLElement): void {
+    const { width, height } = el.getBoundingClientRect();
+    this.config.containerWidth = width;
+    this.config.containerHeight = height;
   }
 
   on<T>(what, func: T) {

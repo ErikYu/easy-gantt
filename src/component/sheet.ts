@@ -1,6 +1,6 @@
 import { add, differenceInDays, format } from 'date-fns';
 import { DataStore, EVT, reloadLinkFn } from '../core/data-store';
-import { appendChildren, g } from '../core/dom';
+import { appendChildren, g, setStyle } from '../core/dom';
 import { ClsPrefix } from '../core/constant';
 import { Draggable } from './draggable';
 import { addPx, flatten } from '../util/util';
@@ -16,6 +16,9 @@ export class Sheet {
     this.el = g({
       tag: 'div',
       className: `${ClsPrefix}-sheet`,
+      styles: {
+        width: `${this.store.config.containerWidth - 500 - 17}px`,
+      },
       children: [
         (this.headerEl = g({
           tag: 'div',
@@ -28,9 +31,20 @@ export class Sheet {
       ],
     });
     this.load();
+    this.store.singletonContainer.sheet = this;
   }
 
   private load() {
+    this.sheetEl.appendChild(
+      g({
+        tag: 'div',
+        className: `${ClsPrefix}-sheet-overlayer`,
+        styles: {
+          width: `${this.store.contentHWidth}px`,
+          height: `${this.store.contentVHeight}px`,
+        },
+      }),
+    );
     this.renderHeader();
     this.renderTasks();
     this.renderLink();
@@ -60,6 +74,9 @@ export class Sheet {
   }
 
   private renderTasks() {
+    setStyle(this.sheetEl, {
+      height: `${this.store.config.containerHeight - 40}px`,
+    });
     appendChildren(
       this.sheetEl,
       ...flatten(this.store.data).map((item, index) => {

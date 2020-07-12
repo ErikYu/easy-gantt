@@ -474,7 +474,6 @@ export class Link {
     y: number,
     invokeIndex: 'f' | 'l' | null,
   ) {
-    console.log(invokeIndex);
     const { linkHoverThick, linkThick } = this.store.config;
     // if ((x === 0 && y === 0) || (x !== 0 && y !== 0)) {
     //   throw Error(`Cannot draw this line： ${JSON.stringify({x,y})}`);

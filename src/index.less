@@ -24,6 +24,14 @@
   justify-content: center;
 }
 
+.clearfix:after{
+  content: " ";        
+  display: block;        
+  height: 0;        
+  clear: both;        
+  visibility: hidden;        
+}
+
 .@{clsPrefix} {
   background-color: @bg-color;
   display: flex;
@@ -41,6 +49,7 @@
       }
     }
     &-content{
+      overflow: hidden;
       &-line {
         display: flex;
         height: @line-height;
@@ -56,12 +65,12 @@
   }
 
   &-sheet {
-    //width: 600px;
-    overflow: auto;
+    overflow: hidden;
     &-header {
       width: auto;
       height: @header-height;
       display: flex;
+      overflow: hidden;
       &-cell {
         display: flex;
         align-items: center;
@@ -72,7 +81,31 @@
       }
     }
     &-content {
+      overflow: hidden;
       position: relative;
+    }
+  }
+
+  &-scrollbar {
+    & > .scroll-el {
+      position: absolute;
+    }
+    &.vertical {
+      background-color: #fff;
+      width: 17px;
+      & > .scroll-el {
+        overflow-x: hidden;
+        overflow-y: auto;
+      }
+    }
+    &.horizontal {
+      background-color: #fff;
+      height: 17px;
+      width: 100%;
+      & > .scroll-el {
+        overflow-x: auto;
+        overflow-y: hidden;
+      }
     }
   }
 
@@ -206,4 +239,6 @@
       line-height: @helper-size + 10;
     }
   }
+
+  
 }

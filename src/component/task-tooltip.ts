@@ -35,7 +35,6 @@ export class TaskTooltip {
   }
 
   setTask(task: GanttItem) {
-    console.log(task);
     // gen child html
     if (typeof this.store.config.taskTooltipTemplate === 'function') {
       this.el.innerHTML = this.store.config.taskTooltipTemplate(task);
